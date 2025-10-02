@@ -1,13 +1,29 @@
 package com.ProyectoTecnonet.tecnonet.model;
-import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "CONTRATOS")
+@NoArgsConstructor 
 public class Contrato {
 
     @Id
@@ -16,12 +32,16 @@ public class Contrato {
     private Integer idContrato;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario", nullable = false, referencedColumnName = "id_usuario")
+    @JoinColumn(name = "id_usuario", nullable = false) 
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_plan", nullable = false, referencedColumnName = "id_plan")
+    @JoinColumn(name = "id_plan", nullable = false) 
     private Plan plan;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estado_contrato", nullable = false)
+    private EstadoContrato estadoContrato; 
 
     @Column(name = "fecha_contratacion", nullable = false, updatable = false)
     private LocalDateTime fechaContratacion;
@@ -31,10 +51,6 @@ public class Contrato {
 
     @Column(name = "fecha_fin_contrato")
     private LocalDate fechaFinContrato;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "estado_contrato", nullable = false)
-    private EstadoContrato estadoContrato;
 
     @Column(name = "direccion_instalacion", nullable = false, length = 255)
     private String direccionInstalacion;
@@ -51,19 +67,12 @@ public class Contrato {
     @Column(name = "observaciones", columnDefinition = "TEXT")
     private String observaciones;
 
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Factura> facturas;
+
     @PrePersist
     protected void onCreate() {
         this.fechaContratacion = LocalDateTime.now();
-        if (this.estadoContrato == null) {
-            this.estadoContrato = EstadoContrato.PENDIENTE_INSTALACION;
-        }
     }
-
-    public enum EstadoContrato {
-        ACTIVO,
-        PENDIENTE_INSTALACION,
-        CANCELADO,
-        FINALIZADO,
-        SUSPENDIDO
-    }
+    
 }

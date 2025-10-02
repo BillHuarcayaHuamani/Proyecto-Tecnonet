@@ -1,14 +1,28 @@
 package com.ProyectoTecnonet.tecnonet.model;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType; 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "PLANES")
+@NoArgsConstructor 
+@AllArgsConstructor 
 public class Plan {
 
     @Id
@@ -25,8 +39,8 @@ public class Plan {
     @Column(name = "velocidad_carga_mbps", nullable = false)
     private Integer velocidadCargaMbps;
 
-    @Column(name = "wifi_incluido")
-    private Integer wifiIncluido;
+    @Column(name = "wifi_incluido", nullable = false) 
+    private Boolean wifiIncluido;
 
     @Column(name = "mes_gratis_promocion", nullable = false)
     private Boolean mesGratisPromocion;
@@ -46,7 +60,7 @@ public class Plan {
     @Column(name = "activo", nullable = false)
     private Boolean activo;
 
-    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Contrato> contratos;
 
     @PrePersist
