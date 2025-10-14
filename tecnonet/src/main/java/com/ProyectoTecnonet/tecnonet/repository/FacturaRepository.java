@@ -7,5 +7,4 @@ import com.ProyectoTecnonet.tecnonet.model.Factura;
 
 @Repository
 public interface FacturaRepository extends JpaRepository<Factura, Integer> {
-    
 }
