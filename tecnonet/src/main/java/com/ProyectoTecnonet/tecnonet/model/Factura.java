@@ -1,17 +1,22 @@
 package com.ProyectoTecnonet.tecnonet.model;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "FACTURAS")
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
+@Table(name = "facturas")
+@Data
 public class Factura {
 
     @Id
@@ -20,35 +25,28 @@ public class Factura {
     private Integer idFactura;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_estado_pago", nullable = false)
-    private EstadoPago estadoPago; 
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_contrato", nullable = false)
     private Contrato contrato;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estado_pago", nullable = false)
+    private EstadoPago estadoPago;
 
     @Column(name = "monto_total", nullable = false, precision = 10, scale = 2)
     private BigDecimal montoTotal;
 
-    @Column(name = "fecha_emision", nullable = false, updatable = false)
+    @Column(name = "fecha_emision", nullable = false)
     private LocalDate fechaEmision;
 
     @Column(name = "fecha_vencimiento", nullable = false)
     private LocalDate fechaVencimiento;
-    
-    @Column(name = "fecha_pago")
-    private LocalDate fechaPago;
 
     @Column(name = "metodo_pago", length = 50)
     private String metodoPago;
 
-    @Column(name = "descripcion", columnDefinition = "TEXT")
+    @Column(name = "fecha_pago")
+    private LocalDate fechaPago;
+
+    @Column(name = "descripcion", length = 255)
     private String descripcion;
-    
-    @PrePersist
-    protected void onCreate() {
-        if (this.fechaEmision == null) {
-            this.fechaEmision = LocalDate.now();
-        }
-    }
 }

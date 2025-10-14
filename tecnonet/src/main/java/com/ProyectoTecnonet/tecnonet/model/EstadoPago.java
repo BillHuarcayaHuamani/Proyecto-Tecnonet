@@ -1,25 +1,16 @@
-package com.ProyectoTecnonet.tecnonet.model; 
+package com.ProyectoTecnonet.tecnonet.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ESTADOS_PAGO") 
-@Data 
-@NoArgsConstructor 
-@AllArgsConstructor 
+@Table(name = "estados_pago")
+@Data
 public class EstadoPago {
 
     @Id
@@ -27,9 +18,6 @@ public class EstadoPago {
     @Column(name = "id_estado_pago")
     private Integer idEstadoPago;
 
-    @Column(name = "nombre_estado", nullable = false, length = 50, unique = true)
+    @Column(name = "nombre_estado", nullable = false, unique = true, length = 50)
     private String nombreEstado;
-
-    @OneToMany(mappedBy = "estadoPago", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Factura> facturas;
 }

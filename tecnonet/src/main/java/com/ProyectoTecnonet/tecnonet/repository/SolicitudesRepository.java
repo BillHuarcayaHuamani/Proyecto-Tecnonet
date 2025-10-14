@@ -7,5 +7,4 @@ import com.ProyectoTecnonet.tecnonet.model.Solicitudes;
 
 @Repository
 public interface SolicitudesRepository extends JpaRepository<Solicitudes, Integer> {
-    
 }

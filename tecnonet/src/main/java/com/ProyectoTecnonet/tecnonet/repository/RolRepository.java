@@ -7,5 +7,5 @@ import com.ProyectoTecnonet.tecnonet.model.Rol;
 
 @Repository
 public interface RolRepository extends JpaRepository<Rol, Integer> {
-    
+
 }

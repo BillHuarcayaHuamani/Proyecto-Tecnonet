@@ -1,9 +1,14 @@
 package com.ProyectoTecnonet.tecnonet.model;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,30 +18,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor; 
+import lombok.ToString;
 
-@Data
 @Entity
-@Table(name = "USUARIOS")
-@NoArgsConstructor 
-public class Usuario {
+@Table(name = "usuarios")
+@Data
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
     private Integer idUsuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_rol", nullable = false) 
-    private Rol rol; 
-
     @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(name = "apellido", nullable = true, length = 100)
+    @Column(name = "apellido", nullable = false, length = 100)
     private String apellido;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
@@ -45,26 +44,61 @@ public class Usuario {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
-    @Column(name = "fecha_registro", nullable = false, updatable = false)
+    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "activo", nullable = false)
+    @Column(name = "activo")
     private Boolean activo;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) 
+    @JoinColumn(name = "id_rol", nullable = false)
+    private Rol rol;
+
+    @OneToMany(mappedBy = "usuario")
+    @ToString.Exclude
     private List<Contrato> contratos;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Solicitudes> solicitudesEnviadas; 
+    @OneToMany(mappedBy = "usuario")
+    @ToString.Exclude
+    private List<Solicitudes> solicitudes;
 
-    @OneToMany(mappedBy = "operario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "operario")
+    @ToString.Exclude
     private List<RespuestasSolicitudes> respuestasComoOperario;
 
-    @PrePersist
-    protected void onCreate() {
-        this.fechaRegistro = LocalDateTime.now();
-        if (this.activo == null) {
-            this.activo = true;
-        }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.rol.getNombreRol()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; 
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; 
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; 
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.activo;
     }
 }
+
