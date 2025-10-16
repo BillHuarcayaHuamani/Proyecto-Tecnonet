@@ -1,11 +1,13 @@
 package com.ProyectoTecnonet.tecnonet.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ProyectoTecnonet.tecnonet.dto.RegisterRequest;
 import com.ProyectoTecnonet.tecnonet.model.Rol;
 import com.ProyectoTecnonet.tecnonet.model.Usuario;
 import com.ProyectoTecnonet.tecnonet.repository.RolRepository;
@@ -24,20 +26,30 @@ public class UsuarioServiceImpl implements UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void registrarNuevoUsuario(Usuario usuario) throws Exception {
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
+    public Usuario registrarNuevoUsuario(RegisterRequest registerRequest) throws Exception {
+        if (usuarioRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new Exception("El correo electrónico ya está registrado. Por favor, utiliza otro.");
         }
 
-        usuario.setPasswordHash(passwordEncoder.encode(usuario.getPassword()));
+        Usuario nuevoUsuario = new Usuario();
+        nuevoUsuario.setNombre(registerRequest.getNombre());
+        nuevoUsuario.setApellido(registerRequest.getApellido());
+        nuevoUsuario.setEmail(registerRequest.getEmail());
+        
+        nuevoUsuario.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
 
         Rol rolCliente = rolRepository.findById(3) 
-                .orElseThrow(() -> new Exception("El rol de cliente no se encuentra en la base de datos."));
-        usuario.setRol(rolCliente);
+                .orElseThrow(() -> new Exception("El rol de cliente (ID: 3) no se encuentra en la base de datos."));
+        nuevoUsuario.setRol(rolCliente);
 
-        usuario.setActivo(true);
-        usuario.setFechaRegistro(LocalDateTime.now());
+        nuevoUsuario.setActivo(true);
+        nuevoUsuario.setFechaRegistro(LocalDateTime.now());
 
-        usuarioRepository.save(usuario);
+        return usuarioRepository.save(nuevoUsuario);
+    }
+
+    @Override
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }
