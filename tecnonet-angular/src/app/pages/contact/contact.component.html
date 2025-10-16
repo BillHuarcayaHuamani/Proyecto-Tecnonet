@@ -1,0 +1,22 @@
+<div id="app" class="container py-5">
+    <aside class="col-md-5 d-none d-md-block">
+      <img [src]="imagenAsesor" [alt]="'Imagen de ' + asesorDisplay" class="img-fluid rounded">
+    </aside>
+    <div class="col-md-7">
+      <form (ngSubmit)="enviarMensaje()">
+        <div class="mb-3">
+          <label class="form-label">Preferencia de Género de Asesor</label>
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+              {{ asesorDisplay }}
+            </button>
+            <ul class="dropdown-menu w-100">
+              <li><a class="dropdown-item" href="#" (click)="seleccionarAsesor('MASCULINO', 'Hombre'); $event.preventDefault()">Hombre</a></li>
+              <li><a class="dropdown-item" href="#" (click)="seleccionarAsesor('FEMENINO', 'Mujer'); $event.preventDefault()">Mujer</a></li>
+            </ul>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-danger btn-lg w-100">Enviar Mensaje</button>
+      </form>
+    </div>
+</div>
