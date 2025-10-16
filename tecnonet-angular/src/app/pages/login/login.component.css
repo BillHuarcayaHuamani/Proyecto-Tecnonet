@@ -1,0 +1,32 @@
+.body-bg {
+    background-color: #f8f9fa;
+}
+.login-container {
+    max-width: 950px;
+    width: 85%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.form-section {
+    padding: 40px;
+}
+.login-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto;
+}
+.btn-primary {
+    padding: 10px;
+    font-weight: 500;
+}
+.password-toggle-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
