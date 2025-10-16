@@ -7,5 +7,4 @@ import com.ProyectoTecnonet.tecnonet.model.EstadoPago;
 
 @Repository
 public interface EstadoPagoRepository extends JpaRepository<EstadoPago, Integer> {
-    
 }

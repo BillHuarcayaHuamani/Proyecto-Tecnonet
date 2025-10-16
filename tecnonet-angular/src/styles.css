@@ -1,0 +1,39 @@
+.border {
+    border-width: 5px !important;
+}
+
+#planes .col > .border {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#planes .col > .border ul {
+    flex-grow: 1;
+}
+
+#planes .col > .border p.text-muted {
+    flex-grow: 1;
+}
+
+#planes .col > .border .btn {
+    margin-top: auto;
+}
+.profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #dee2e6;
+}
+
+.dropdown-toggle.d-flex.align-items-center {
+    display: flex !important; 
+    align-items: center !important;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}

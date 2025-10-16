@@ -1,0 +1,18 @@
+<section id="planes" class="seccion-inicio mt-10">
+  <div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-3 gx-0">
+      <div class="col p-3 text-center" *ngFor="let plan of planes">
+        <div class="border rounded p-3 d-flex flex-column h-100">
+          <h5 class="fw-bold text-primary">{{ plan.velocidadDescargaMbps }} Mbps</h5>
+          <h3>{{ plan.nombrePlan }}</h3>
+          <p class="text-muted flex-grow-1">{{ plan.descripcion }}</p>
+          <ul class="list-unstyled text-start">
+              <li><i class="fas fa-wifi text-info me-2"></i> Wifi: <span>{{ plan.wifiIncluido ? 'Sí' : 'No' }}</span></li>
+              </ul>
+          <p class="fs-4 fw-bold text-success">{{ plan.precioMensual | currency:'S/ ' }} x mes</p>
+          <button class="btn btn-primary">Contratar Plan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

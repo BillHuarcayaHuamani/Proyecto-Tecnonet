@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.ProyectoTecnonet.tecnonet.model.RespuestasSolicitudes;
 
 @Repository
-public interface RespuestasSolicitudesRepository extends JpaRepository<RespuestasSolicitudes, Long> {
-    
+public interface RespuestasSolicitudesRepository extends JpaRepository<RespuestasSolicitudes, Integer> {
 }
