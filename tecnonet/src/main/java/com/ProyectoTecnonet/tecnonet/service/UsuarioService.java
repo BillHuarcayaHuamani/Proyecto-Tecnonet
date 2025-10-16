@@ -9,5 +9,5 @@ public interface UsuarioService {
 
     Usuario registrarNuevoUsuario(RegisterRequest registerRequest) throws Exception;
 
-    Optional<Usuario> findByEmail(String email);
+    Optional<Usuario> findByEmail(String email); 
 }
