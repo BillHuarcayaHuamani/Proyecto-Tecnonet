@@ -65,6 +65,6 @@ public class Contrato {
     private String observaciones;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "contrato", cascade = CascadeType.REMOVE) // cascade REMOVE para replicar ON DELETE CASCADE de SQL
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.REMOVE) 
     private List<Factura> facturas;
 }
