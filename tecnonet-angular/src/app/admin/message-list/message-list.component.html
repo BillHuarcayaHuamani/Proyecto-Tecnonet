@@ -1,1 +1,93 @@
-<p>message-list works!</p>
+<div class="container py-5">
+    <h2 class="mb-4">Mensajes Recibidos</h2>
+
+    <div *ngIf="errorMessage && !solicitudSeleccionada" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="mensajeExito" class="alert alert-success">{{ mensajeExito }}</div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellido</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Teléfono Remitente</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Asunto</th>
+                            <th scope="col">Mensaje</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let msg of mensajes">
+                            <td>{{ msg.usuario.nombre }}</td>
+                            <td>{{ msg.usuario.apellido }}</td>
+                            <td>{{ msg.usuario.email }}</td>
+                            <td>{{ msg.numeroRemitente }}</td>
+                            <td>{{ msg.fechaEnvio | date: 'dd-MM-yyyy HH:mm' }}</td>
+                            <td>{{ msg.asunto }}</td>
+                            <td style="min-width: 250px;">{{ msg.mensaje }}</td>
+                            <td>
+                                <span *ngIf="msg.respuestasSolicitudes && msg.respuestasSolicitudes.length > 0"
+                                    class="badge bg-success">Respondido</span>
+                                <span *ngIf="!msg.respuestasSolicitudes || msg.respuestasSolicitudes.length === 0"
+                                    class="badge bg-warning text-dark">Pendiente</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#respuestaModal" (click)="abrirModalRespuesta(msg)"
+                                    [disabled]="msg.respuestasSolicitudes && msg.respuestasSolicitudes.length > 0">
+                                    Responder
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="mensajes.length === 0 && !errorMessage">
+                            <td colspan="9" class="text-center text-muted">No hay mensajes recibidos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="respuestaModal" tabindex="-1" aria-labelledby="respuestaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" *ngIf="solicitudSeleccionada">
+            <div class="modal-header">
+                <h5 class="modal-title" id="respuestaModalLabel">Responder Solicitud #{{
+                    solicitudSeleccionada.idSolicitud }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="cerrarModal()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <p><strong>De:</strong> {{ solicitudSeleccionada.usuario.nombre }} {{
+                        solicitudSeleccionada.usuario.apellido }} ({{ solicitudSeleccionada.usuario.email }})</p>
+                    <p><strong>Asunto:</strong> {{ solicitudSeleccionada.asunto }}</p>
+                    <p><strong>Mensaje Original:</strong></p>
+                    <p class="border p-2 bg-light rounded">{{ solicitudSeleccionada.mensaje }}</p>
+                </div>
+
+                <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+                <form (ngSubmit)="enviarRespuesta()">
+                    <div class="mb-3">
+                        <label for="respuestaTexto" class="form-label">Tu Respuesta:</label>
+                        <textarea class="form-control" id="respuestaTexto" name="respuestaTexto" rows="5"
+                            [(ngModel)]="respuestaTexto" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            (click)="cerrarModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" [disabled]="!respuestaTexto.trim()">Enviar
+                            Respuesta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

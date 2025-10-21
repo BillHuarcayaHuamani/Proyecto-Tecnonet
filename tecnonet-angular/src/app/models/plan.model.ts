@@ -1,11 +1,13 @@
 export interface Plan {
   idPlan: number;
   nombrePlan: string;
-  descripcion: string;
-  precioMensual: number;
   velocidadDescargaMbps: number;
   velocidadCargaMbps: number;
   wifiIncluido: boolean;
-  mesGratisPromocion: boolean;
+  mesGratisPromocion: number;
   puertosEthernet: number;
+  precioMensual: number;
+  descripcion: string;
+  fechaCreacion: string;
+  activo: boolean;
 }

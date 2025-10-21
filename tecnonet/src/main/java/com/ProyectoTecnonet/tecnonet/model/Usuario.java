@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,7 +43,8 @@ public class Usuario implements UserDetails {
     private String email;
 
     @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash;
+    @JsonIgnore
+    private String password;
 
     @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro;
@@ -56,24 +58,27 @@ public class Usuario implements UserDetails {
 
     @OneToMany(mappedBy = "usuario")
     @ToString.Exclude
+    @JsonIgnore
     private List<Contrato> contratos;
 
     @OneToMany(mappedBy = "usuario")
     @ToString.Exclude
+    @JsonIgnore
     private List<Solicitudes> solicitudes;
 
     @OneToMany(mappedBy = "operario")
     @ToString.Exclude
+    @JsonIgnore
     private List<RespuestasSolicitudes> respuestasComoOperario;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.rol.getNombreRol()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + rol.getNombreRol().toUpperCase()));
     }
 
     @Override
     public String getPassword() {
-        return this.passwordHash;
+        return this.password;
     }
 
     @Override
@@ -101,4 +106,3 @@ public class Usuario implements UserDetails {
         return this.activo;
     }
 }
-

@@ -1,18 +1,162 @@
-<section id="planes" class="seccion-inicio mt-10">
-  <div class="container mt-4">
-    <div class="row row-cols-1 row-cols-md-3 gx-0">
-      <div class="col p-3 text-center" *ngFor="let plan of planes">
-        <div class="border rounded p-3 d-flex flex-column h-100">
-          <h5 class="fw-bold text-primary">{{ plan.velocidadDescargaMbps }} Mbps</h5>
-          <h3>{{ plan.nombrePlan }}</h3>
-          <p class="text-muted flex-grow-1">{{ plan.descripcion }}</p>
-          <ul class="list-unstyled text-start">
-              <li><i class="fas fa-wifi text-info me-2"></i> Wifi: <span>{{ plan.wifiIncluido ? 'Sí' : 'No' }}</span></li>
-              </ul>
-          <p class="fs-4 fw-bold text-success">{{ plan.precioMensual | currency:'S/ ' }} x mes</p>
-          <button class="btn btn-primary">Contratar Plan</button>
+<section id="planes" class="py-5" style="background-color: #f8f9fa;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Nuestros Planes Hogar de Internet</h2>
+      <p class="lead text-muted">Descubre nuestras opciones de internet rápido y confiable, diseñadas para ajustarse a tus necesidades y presupuesto.</p>
+    </div>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+    <div class="row g-4 justify-content-center">
+      
+      <div class="col-lg-4 col-md-6" *ngFor="let plan of planes">
+        <div class="card h-100 shadow-sm border-light text-center plan-card">
+          <div class="card-body p-4 d-flex flex-column">
+            <h5 class="fw-bold text-primary">{{ plan.velocidadDescargaMbps }} Mbps</h5>
+            <h3 class="card-title h4 fw-bold mb-3">{{ plan.nombrePlan }}</h3>
+            <p class="text-muted flex-grow-1">{{ plan.descripcion }}</p>
+            
+            <ul class="list-unstyled text-start my-4">
+              <li><i class="bi bi-arrow-down-circle text-primary me-2"></i> Descarga: {{ plan.velocidadDescargaMbps }} Mbps</li>
+              <li><i class="bi bi-arrow-up-circle text-info me-2"></i> Carga: {{ plan.velocidadCargaMbps }} Mbps</li>
+              <li><i class="bi bi-wifi text-success me-2"></i> Wifi: {{ plan.wifiIncluido ? 'Sí' : 'No' }}</li>
+              <li><i class="bi bi-gift text-warning me-2"></i> Mes gratis: {{ plan.mesGratisPromocion > 0 ? 'Sí' : 'No' }}</li>
+              <li><i class="bi bi-ethernet text-secondary me-2"></i> Puertos: {{ plan.puertosEthernet }}</li>
+            </ul>
+            
+            <p class="fs-4 fw-bold text-dark my-3">S/ {{ plan.precioMensual.toFixed(2) }} x mes</p>
+            <button class="btn btn-primary btn-lg mt-auto" data-bs-toggle="modal" data-bs-target="#contratarModal" (click)="seleccionarPlan(plan)">
+              Contratar Plan
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="beneficios" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Beneficios de Elegir Tecnonet</h2>
+      <p class="lead text-muted">Con Tecnonet, disfruta de conexión estable, soporte técnico personalizado las 24 horas y planes que se adaptan a ti.</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm border-light h-100">
+          <div class="card-body p-4">
+            <i class="bi bi-speedometer2 display-4 text-primary mb-3"></i>
+            <h5 class="card-title fw-bold">Internet de Alta Velocidad</h5>
+            <p class="card-text text-muted">Navega, descarga y juega sin interrupciones con nuestras rápidas velocidades de internet.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm border-light h-100">
+          <div class="card-body p-4">
+            <i class="bi bi-router display-4 text-success mb-3"></i>
+            <h5 class="card-title fw-bold">Multiuso</h5>
+            <p class="card-text text-muted">Disfruta de una conexión inalámbrica a distintos dispositivos de vuestro hogar.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card text-center shadow-sm border-light h-100">
+          <div class="card-body p-4">
+            <i class="bi bi-piggy-bank display-4 text-info mb-3"></i>
+            <h5 class="card-title fw-bold">Ahorro y Comodidad</h5>
+            <p class="card-text text-muted">Combina tus servicios y ahorra dinero mientras disfrutas de la conveniencia de tener todo en un solo paquete.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<section id="servicios" class="py-5" style="background-color: #f8f9fa;">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Nuestros Servicios</h2>
+      <p class="lead text-muted">En Tecnonet ofrecemos una variedad de servicios para mejorar tu experiencia de conexión.</p>
+    </div>
+    
+    <div class="card shadow-sm border-light overflow-hidden">
+      <div class="row g-0">
+        <div class="col-md-8 d-flex align-items-center">
+          <div class="card-body p-5">
+            <h4 class="card-title fw-bold">Descubre Más en Nuestro Video</h4>
+            <p class="card-text text-muted">Muy nuestro video para conocer más sobre cómo Tecnonet puede mejorar tu conexión a internet y los servicios que ofrecemos.</p>
+            <a href="#" class="btn btn-primary">Ver Video</a>
+          </div>
+        </div>
+        <div class="col-md-4 d-none d-md-flex align-items-center justify-content-center bg-primary text-white">
+          <i class="bi bi-play-circle-fill" style="font-size: 8rem;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal fade" id="contratarModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" *ngIf="planSeleccionado">
+      <div class="modal-header">
+        <h5 class="modal-title">Contratar: {{ planSeleccionado.nombrePlan }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="contratoForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Nombre del Cliente</label>
+              <input type="text" class="form-control" formControlName="nombreCliente" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Apellido del Cliente</label>
+              <input type="text" class="form-control" formControlName="apellidoCliente" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" formControlName="emailCliente" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Costo de Instalación (S/)</label>
+              <input type="number" class="form-control" formControlName="costoInstalacion">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Dirección de Instalación</label>
+              <input type="text" class="form-control" formControlName="direccionInstalacion">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Número de Teléfono de Contacto</label>
+              <input type="text" class="form-control" formControlName="numeroTelefonoContacto">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Método de Pago</label>
+              <select class="form-select" formControlName="metodoPago">
+                <option value="">Seleccione...</option>
+                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                <option value="Yape/Plin">Yape/Plin</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Fecha de Inicio de Servicio (Opcional)</label>
+              <input type="date" class="form-control" formControlName="fechaInicioServicio">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" rows="3" formControlName="observaciones"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmarContratacion()" data-bs-dismiss="modal">Confirmar Contratación</button>
+      </div>
+    </div>
+  </div>
+</div>

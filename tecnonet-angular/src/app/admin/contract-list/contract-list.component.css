@@ -1,0 +1,28 @@
+.badge-pendiente {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.badge-activo {
+    background-color: #198754;
+    color: #fff;
+}
+
+.badge-cancelado {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+fieldset {
+    border-radius: 4px;
+}
+
+legend {
+    font-size: 1rem !important;
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+fieldset p {
+    margin-bottom: 0.5rem;
+}

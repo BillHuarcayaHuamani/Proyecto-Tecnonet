@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService, DecodedToken } from '../../services/auth.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +12,15 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  isLoggedIn = true;
-  isAdmin = false;
-  usuarioLogueado = { nombre: 'Juan', apellido: 'Pérez' };
+
+  currentUser$: Observable<DecodedToken | null>;
+
+  constructor(public authService: AuthService, private router: Router) {
+    this.currentUser$ = this.authService.currentUser;
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/iniciarSesion']);
+  }
 }
