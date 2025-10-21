@@ -1,1 +1,81 @@
-<p>dashboard works!</p>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5">Bienvenido al Panel de Administración</h1>
+        <p class="lead text-muted">{{ adminEmail }}</p>
+        <p>Desde aquí puedes gestionar todos los aspectos de TecnoNet: usuarios, contratos, servicios y comunicaciones.
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm admin-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Gestión de Usuarios</h5>
+                    <p class="card-text">Administra cuentas de clientes y personal.</p>
+                    <a routerLink="/admin/usuarios" class="btn btn-outline-primary">Ir a Usuarios</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm admin-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-file-earmark-text-fill display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Gestión de Contratos</h5>
+                    <p class="card-text">Revisa y modifica los contratos de servicio.</p>
+                    <a routerLink="/admin/contratos" class="btn btn-outline-success">Ir a Contratos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm admin-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-hdd-stack-fill display-4 text-info mb-3"></i>
+                    <h5 class="card-title">Gestión de Servicios</h5>
+                    <p class="card-text">Define y actualiza los planes de internet.</p>
+                    <a routerLink="/admin/servicios" class="btn btn-outline-info">Ir a Servicios</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm admin-card">
+                <div class="card-body text-center">
+                    <i class="bi bi-chat-left-text-fill display-4 text-warning mb-3"></i>
+                    <h5 class="card-title">Ver Mensajes</h5>
+                    <p class="card-text">Consulta y responde los mensajes de clientes.</p>
+                    <a routerLink="/admin/mensajes" class="btn btn-outline-warning">Ir a Mensajes</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
+            Cerrar Sesión (Demo Modal)
+        </button>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmLogoutModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Cerrar Sesión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que quieres cerrar tu sesión?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="confirmLogout()" data-bs-dismiss="modal">Cerrar
+                    Sesión</button>
+            </div>
+        </div>
+    </div>
+</div>

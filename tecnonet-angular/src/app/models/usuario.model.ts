@@ -1,9 +1,11 @@
+import { Rol } from './rol.model';
+
 export interface Usuario {
-  id: number;
+  idUsuario: number;
   nombre: string;
   apellido: string;
   email: string;
-  tipoUsuario: string;
-  activo: boolean;
   fechaRegistro: string;
+  activo: boolean;
+  rol: Rol;
 }

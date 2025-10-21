@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UsuarioService } from '../../services/usuario.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +20,7 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private usuarioService: UsuarioService,
+    private authService: AuthService,
     private router: Router
   ) {
     this.loginForm = this.fb.group({
@@ -34,14 +34,17 @@ export class LoginComponent {
     this.successMessage = null;
 
     if (this.loginForm.valid) {
-      this.usuarioService.login(this.loginForm.value).subscribe({
+      this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           this.successMessage = response.message;
-          console.log('Login exitoso:', response);
-          this.router.navigate(['/admin']); 
+          if (this.authService.isAdmin()) {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/home']);
+          }
         },
         error: (err) => {
-          this.errorMessage = err.error?.message || 'Error en el servidor. Intenta de nuevo más tarde.';
+          this.errorMessage = err.error?.message || 'Error en el servidor.';
           console.error('Error en el login:', err);
         }
       });

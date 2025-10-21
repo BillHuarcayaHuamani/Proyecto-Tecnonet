@@ -1,24 +1,53 @@
-<header class="bg-dark text-white py-3">
+<header class="bg-dark text-white py-2 shadow-sm" *ngIf="authService.isLoggedIn()">
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand" routerLink="/"><img src="assets/img/logo.png" height="30" />TecnoNet</a>
+
+      <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+        <span class="fw-bold fs-5">TecnoNet</span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <ng-container *ngIf="!isAdmin">
-            <li class="nav-item"><a class="nav-link" routerLink="/" fragment="planes">Planes</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/" fragment="beneficios">Beneficios</a></li>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          <ng-container *ngIf="authService.hasRole('Cliente')">
+            <li class="nav-item"><a class="nav-link" routerLink="/home" fragment="planes">Planes</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/contactanos">Contáctanos</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/mis-facturas">Mis Facturas</a></li>
           </ng-container>
-          <ng-container *ngIf="isAdmin">
+
+          <ng-container *ngIf="authService.isStaff()">
             <li class="nav-item"><a class="nav-link" routerLink="/admin/servicios">Servicios</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/admin/usuarios">Usuarios</a></li>
-            </ng-container>
-
-          <li class="nav-item" *ngIf="!isLoggedIn">
-            <a class="nav-link" routerLink="/iniciarSesion">Iniciar Sesión</a>
-          </li>
-          <li class="nav-item dropdown" *ngIf="isLoggedIn">
+            <li class="nav-item"><a class="nav-link" routerLink="/admin/mensajes">Mensajes</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/admin/contratos">Contratos</a></li>
+            <li class="nav-item" *ngIf="authService.hasRole('Operario')">
+                <a class="nav-link" routerLink="/admin/facturas">Facturas</a>
             </li>
+          </ng-container>
+        </ul>
+
+        <ul class="navbar-nav" *ngIf="(currentUser$ | async) as user">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle fs-5 me-2"></i>
+              {{ user.nombre }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li *ngIf="authService.isStaff()"><a class="dropdown-item" routerLink="/admin">Panel de Admin</a></li>
+              <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">
+                  Cerrar Sesión
+                </a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>

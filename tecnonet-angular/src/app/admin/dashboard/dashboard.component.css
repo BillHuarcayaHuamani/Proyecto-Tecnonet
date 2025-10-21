@@ -1,0 +1,21 @@
+.admin-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.admin-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.admin-card .card-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+}

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ProyectoTecnonet.tecnonet.config.JwtUtil;
 import com.ProyectoTecnonet.tecnonet.dto.AuthResponse;
 import com.ProyectoTecnonet.tecnonet.dto.LoginRequest;
 import com.ProyectoTecnonet.tecnonet.dto.RegisterRequest;
+import com.ProyectoTecnonet.tecnonet.model.Usuario;
 import com.ProyectoTecnonet.tecnonet.service.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -30,19 +32,26 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            return ResponseEntity.ok(new AuthResponse("Inicio de sesión exitoso!"));
+
+            Usuario usuario = (Usuario) authentication.getPrincipal();
+
+            String token = jwtUtil.generateToken(usuario);
+
+            return ResponseEntity.ok(new AuthResponse("Inicio de sesión exitoso!", token));
 
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Credenciales incorrectas. Por favor, verifica tu correo y contraseña."));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse("Credenciales incorrectas.", null));
         }
     }
 
@@ -50,10 +59,10 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         try {
             usuarioService.registrarNuevoUsuario(registerRequest);
-            
-            return ResponseEntity.ok(new AuthResponse("Usuario registrado exitosamente!"));
+
+            return ResponseEntity.ok(new AuthResponse("Usuario registrado exitosamente!", null));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new AuthResponse(e.getMessage()));
+            return ResponseEntity.badRequest().body(new AuthResponse(e.getMessage(), null));
         }
     }
 }

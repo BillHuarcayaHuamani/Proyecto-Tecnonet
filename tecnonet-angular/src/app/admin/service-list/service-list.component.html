@@ -1,1 +1,206 @@
-<p>service-list works!</p>
+<div class="container py-5">
+    <h2 class="mb-4">Administración de Planes</h2>
+
+    <div *ngIf="mensajeExito" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ mensajeExito }}
+        <button type="button" class="btn-close" (click)="mensajeExito = null"></button>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = null"></button>
+    </div>
+
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Ingresar Nuevo Plan</h5>
+        </div>
+        <div class="card-body">
+            <form [formGroup]="nuevoPlanForm" (ngSubmit)="guardarNuevoPlan()">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="nombrePlan" class="form-label">Nombre del Plan</label>
+                        <input type="text" id="nombrePlan" class="form-control" formControlName="nombrePlan">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="velocidadDescarga" class="form-label">Velocidad Descarga (Mbps)</label>
+                        <input type="number" id="velocidadDescarga" class="form-control"
+                            formControlName="velocidadDescargaMbps">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="velocidadCarga" class="form-label">Velocidad Carga (Mbps)</label>
+                        <input type="number" id="velocidadCarga" class="form-control"
+                            formControlName="velocidadCargaMbps">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="wifiIncluido" class="form-label">WiFi Incluido</label>
+                        <select id="wifiIncluido" class="form-select" formControlName="wifiIncluido">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="mesGratis" class="form-label">Mes Gratis Promoción</label>
+                        <select id="mesGratis" class="form-select" formControlName="mesGratisPromocion">
+                            <option value="1">Sí</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="puertosEthernet" class="form-label">Puertos Ethernet</label>
+                        <input type="number" id="puertosEthernet" class="form-control"
+                            formControlName="puertosEthernet">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="precioMensual" class="form-label">Precio Mensual (S/)</label>
+                        <input type="number" id="precioMensual" class="form-control" formControlName="precioMensual"
+                            step="0.01">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="activo" class="form-label">Activo</label>
+                        <select id="activo" class="form-select" formControlName="activo">
+                            <option value="true">Sí</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea id="descripcion" class="form-control" formControlName="descripcion"
+                            rows="1"></textarea>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary" [disabled]="nuevoPlanForm.invalid">Guardar
+                        Plan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <h3 class="mb-4">Planes Registrados</h3>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Descarga (Mbps)</th>
+                            <th>Carga (Mbps)</th>
+                            <th>WiFi</th>
+                            <th>Mes Gratis</th>
+                            <th>Puertos Ethernet</th>
+                            <th>Precio Mensual</th>
+                            <th>Activo</th>
+                            <th>Fecha Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let plan of planes; let i = index">
+                            <th>{{ i + 1 }}</th>
+                            <td>{{ plan.nombrePlan }}</td>
+                            <td>{{ plan.velocidadDescargaMbps }}</td>
+                            <td>{{ plan.velocidadCargaMbps }}</td>
+                            <td>{{ plan.wifiIncluido ? 'Sí' : 'No' }}</td>
+                            <td>{{ plan.mesGratisPromocion === 1 ? 'Sí' : 'No' }}</td>
+                            <td>{{ plan.puertosEthernet }}</td>
+                            <td>{{ plan.precioMensual | currency:'S/ ' }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="plan.activo ? 'bg-success' : 'bg-danger'">
+                                    {{ plan.activo ? 'Sí' : 'No' }}
+                                </span>
+                            </td>
+                            <td>{{ plan.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm me-2" data-bs-toggle="modal"
+                                    data-bs-target="#modificarPlanModal" (click)="abrirModalModificar(plan)">
+                                    Modificar
+                                </button>
+                                <button class="btn btn-danger btn-sm" (click)="eliminarPlan(plan.idPlan)">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="planes.length === 0 && !errorMessage">
+                            <td colspan="11" class="text-center text-muted">No hay planes registrados.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modificarPlanModal" tabindex="-1" #modificarPlanModal>
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modificar Plan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="modificarPlanForm" (ngSubmit)="actualizarPlan()">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Nombre del Plan</label>
+                            <input type="text" class="form-control" formControlName="nombrePlan">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Velocidad Descarga (Mbps)</label>
+                            <input type="number" class="form-control" formControlName="velocidadDescargaMbps">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Velocidad Carga (Mbps)</label>
+                            <input type="number" class="form-control" formControlName="velocidadCargaMbps">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">WiFi Incluido</label>
+                            <select class="form-select" formControlName="wifiIncluido">
+                                <option value="true">Sí</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Mes Gratis</label>
+                            <select class="form-select" formControlName="mesGratisPromocion">
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Puertos Ethernet</label>
+                            <input type="number" class="form-control" formControlName="puertosEthernet">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Precio Mensual (S/)</label>
+                            <input type="number" class="form-control" formControlName="precioMensual" step="0.01">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Activo</label>
+                            <select class="form-select" formControlName="activo">
+                                <option value="true">Sí</option>
+                                <option value="false">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" formControlName="descripcion" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer mt-4 pb-0">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            [disabled]="modificarPlanForm.invalid">Actualizar Plan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

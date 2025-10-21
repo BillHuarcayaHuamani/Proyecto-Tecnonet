@@ -2,11 +2,9 @@ package com.ProyectoTecnonet.tecnonet.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.ProyectoTecnonet.tecnonet.dto.RegisterRequest;
 import com.ProyectoTecnonet.tecnonet.model.Rol;
 import com.ProyectoTecnonet.tecnonet.model.Usuario;
@@ -36,11 +34,26 @@ public class UsuarioServiceImpl implements UsuarioService {
         nuevoUsuario.setApellido(registerRequest.getApellido());
         nuevoUsuario.setEmail(registerRequest.getEmail());
         
-        nuevoUsuario.setPasswordHash(passwordEncoder.encode(registerRequest.getPassword()));
+        nuevoUsuario.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
-        Rol rolCliente = rolRepository.findById(3) 
-                .orElseThrow(() -> new Exception("El rol de cliente (ID: 3) no se encuentra en la base de datos."));
-        nuevoUsuario.setRol(rolCliente);
+        int rolId;
+        String rolNombre;
+        String emailLowerCase = registerRequest.getEmail().toLowerCase();
+
+        if (emailLowerCase.endsWith("@adtecnonet.com")) {
+            rolId = 1;
+            rolNombre = "Administrador";
+        } else if (emailLowerCase.endsWith("@tecnonet.com")) {
+            rolId = 2;
+            rolNombre = "Operario";
+        } else {
+            rolId = 3;
+            rolNombre = "Cliente";
+        }
+
+        Rol rolAsignado = rolRepository.findById(rolId) 
+                .orElseThrow(() -> new Exception("El rol de " + rolNombre + " (ID: " + rolId + ") no se encuentra en la base de datos."));
+        nuevoUsuario.setRol(rolAsignado);
 
         nuevoUsuario.setActivo(true);
         nuevoUsuario.setFechaRegistro(LocalDateTime.now());

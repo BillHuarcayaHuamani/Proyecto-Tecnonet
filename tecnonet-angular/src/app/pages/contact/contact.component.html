@@ -1,22 +1,48 @@
-<div id="app" class="container py-5">
-    <aside class="col-md-5 d-none d-md-block">
-      <img [src]="imagenAsesor" [alt]="'Imagen de ' + asesorDisplay" class="img-fluid rounded">
-    </aside>
-    <div class="col-md-7">
-      <form (ngSubmit)="enviarMensaje()">
-        <div class="mb-3">
-          <label class="form-label">Preferencia de Género de Asesor</label>
-          <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
-              {{ asesorDisplay }}
-            </button>
-            <ul class="dropdown-menu w-100">
-              <li><a class="dropdown-item" href="#" (click)="seleccionarAsesor('MASCULINO', 'Hombre'); $event.preventDefault()">Hombre</a></li>
-              <li><a class="dropdown-item" href="#" (click)="seleccionarAsesor('FEMENINO', 'Mujer'); $event.preventDefault()">Mujer</a></li>
-            </ul>
-          </div>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="card shadow-sm border-light">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="fw-bold mb-3 text-center">Contáctanos</h2>
+          <p class="text-muted mb-4 text-center">Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo lo antes posible.</p>
+
+          <div *ngIf="mensajeEnviado" class="alert alert-success">Mensaje enviado con éxito.</div>
+          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+          <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="nombres" class="form-label">Nombres</label>
+                <input type="text" class="form-control" id="nombres" formControlName="nombres" required>
+              </div>
+              <div class="col-md-6">
+                <label for="apellidos" class="form-label">Apellidos</label>
+                <input type="text" class="form-control" id="apellidos" formControlName="apellidos" required>
+              </div>
+              <div class="col-md-6">
+                <label for="correo" class="form-label">Correo Electrónico</label>
+                <input type="email" class="form-control" id="correo" formControlName="correo" required email>
+              </div>
+              <div class="col-md-6">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <input type="tel" class="form-control" id="telefono" formControlName="telefono">
+              </div>
+              <div class="col-12">
+                <label for="asunto" class="form-label">Asunto</label>
+                <input type="text" class="form-control" id="asunto" formControlName="asunto" required>
+              </div>
+              <div class="col-12">
+                <label for="mensaje" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="mensaje" formControlName="mensaje" rows="4" required></textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger btn-lg w-100 mt-4" [disabled]="contactForm.invalid">Enviar Mensaje</button>
+          </form>
         </div>
-        <button type="submit" class="btn btn-danger btn-lg w-100">Enviar Mensaje</button>
-      </form>
+      </div>
+
     </div>
+  </div>
 </div>
