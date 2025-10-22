@@ -33,7 +33,12 @@
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-info btn-sm">Ver Detalles</button>
+                                <button class="btn btn-info btn-sm" 
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detallesFacturaModal"
+                                        (click)="verDetalles(factura)">
+                                    Ver Detalles
+                                </button>
                             </td>
                         </tr>
                         <tr *ngIf="facturas.length === 0 && !errorMessage">
@@ -41,6 +46,70 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="detallesFacturaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" *ngIf="facturaSeleccionada">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles de la Factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h6 class="mb-0">Factura ID: {{ facturaSeleccionada.idFactura }}</h6>
+                    <span class="badge fs-6"
+                          [ngClass]="getEstadoPagoClass(facturaSeleccionada.estadoPago.nombreEstado)">
+                        {{ facturaSeleccionada.estadoPago.nombreEstado }}
+                    </span>
+                </div>
+
+                <fieldset class="border p-3 mb-3">
+                    <legend class="float-none w-auto px-2 fs-6">Cliente y Contrato</legend>
+                    <p><strong>Cliente:</strong> {{ facturaSeleccionada.contrato.usuario.nombre }} {{
+                        facturaSeleccionada.contrato.usuario.apellido }}</p>
+                    <p><strong>Email:</strong> {{ facturaSeleccionada.contrato.usuario.email }}</p>
+                    <p><strong>Fecha Contratación:</strong> {{ facturaSeleccionada.contrato.fechaContratacion | date: 'dd/MM/yyyy' }}</p>
+                    <p class="mb-0"><strong>Fin de Contrato:</strong> {{ facturaSeleccionada.contrato.fechaFinContrato | date: 'dd/MM/yyyy' }}</p>
+                </fieldset>
+
+                <fieldset class="border p-3 mb-3">
+                    <legend class="float-none w-auto px-2 fs-6">Detalles de Facturación</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Monto Total:</strong> {{ facturaSeleccionada.montoTotal | currency:'S/ ' }}</p>
+                            <p class="mb-0"><strong>Emisión:</strong> {{ facturaSeleccionada.fechaEmision | date: 'dd/MM/yyyy' }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Descripción:</strong> {{ facturaSeleccionada.descripcion }}</p>
+                            <p class="mb-0"><strong>Vencimiento:</strong> {{ facturaSeleccionada.fechaVencimiento | date: 'dd/MM/yyyy' }}</p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border p-3 mb-3">
+                    <legend class="float-none w-auto px-2 fs-6">Información de Pago</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Método de Pago:</strong>
+                                <span>{{ facturaSeleccionada.metodoPago || ' No se registró un método de pago' }}</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-0"><strong>Fecha de Pago:</strong>
+                                <span>{{ (facturaSeleccionada.fechaPago | date: 'dd/MM/yyyy') || ' Aún no se ha cancelado' }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

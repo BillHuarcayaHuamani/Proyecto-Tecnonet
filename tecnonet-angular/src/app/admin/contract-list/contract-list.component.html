@@ -31,7 +31,7 @@
                                     [disabled]="contrato.estadoContrato.idEstadoContrato === 1"
                                     [ngClass]="getSelectBackgroundClass(contrato.estadoContrato.nombreEstado)">
 
-                                    <option *ngFor="let estado of estadosContrato" [value]="estado.idEstadoContrato">
+                                    <option *ngFor="let estado of estadosDisponibles" [value]="estado.idEstadoContrato">
                                         {{ estado.nombreEstado }}
                                     </option>
                                 </select>
