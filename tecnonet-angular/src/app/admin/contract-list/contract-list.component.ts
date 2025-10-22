@@ -17,6 +17,9 @@ export class ContractListComponent implements OnInit {
   
   contratos: Contrato[] = [];
   estadosContrato: EstadoContrato[] = []; 
+  
+  estadosDisponibles: EstadoContrato[] = []; 
+
   errorMessage: string | null = null;
   successMessage: string | null = null;
   contratoSeleccionado: Contrato | null = null;
@@ -43,7 +46,11 @@ export class ContractListComponent implements OnInit {
   cargarEstados(): void {
     this.contratoService.getEstadoContratos().subscribe({
       next: (data) => {
-        this.estadosContrato = data;
+        this.estadosContrato = data; 
+        
+        this.estadosDisponibles = data.filter(estado => 
+          estado.idEstadoContrato === 1 || estado.idEstadoContrato === 2
+        );
       },
       error: (err) => {
         console.error("Error al cargar estados:", err);
@@ -87,7 +94,7 @@ export class ContractListComponent implements OnInit {
     if (!estadoNombre) return 'bg-secondary';
     switch (estadoNombre.toUpperCase()) {
       case 'ACTIVO': return 'bg-success text-white';
-      case 'PENDIENTE DE ACTIVACIÓN': return 'bg-warning text-dark';
+      case 'PENDIENTE DE INSTALACIÓN': return 'bg-warning text-dark';
       case 'CANCELADO': return 'bg-danger text-white';
       case 'FINALIZADO': return 'bg-info text-dark';
       default: return 'bg-secondary text-white';
@@ -95,14 +102,14 @@ export class ContractListComponent implements OnInit {
   }
 
   getSelectBackgroundClass(estadoNombre: string): string {
-     if (!estadoNombre) return '';
-     switch (estadoNombre.toUpperCase()) {
-       case 'ACTIVO': return 'bg-success text-white';
-       case 'PENDIENTE DE ACTIVACIÓN': return 'bg-warning text-dark';
-       case 'CANCELADO': return 'bg-danger text-white';
-       case 'FINALIZADO': return 'bg-info text-dark';
-       default: return 'bg-secondary text-white';
-     }
+      if (!estadoNombre) return '';
+      switch (estadoNombre.toUpperCase()) {
+        case 'ACTIVO': return 'bg-success text-white';
+        case 'PENDIENTE DE INSTALACIÓN': return 'bg-warning text-dark';
+        case 'CANCELADO': return 'bg-danger text-white';
+        case 'FINALIZADO': return 'bg-info text-dark';
+        default: return 'bg-secondary text-white';
+      }
   }
 
   mostrarMensajeExito(mensaje: string, duracion: number = 3000): void {

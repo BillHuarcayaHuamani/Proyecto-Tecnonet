@@ -13,6 +13,8 @@ import { Factura } from '../../models/factura.model';
 export class InvoiceListComponent implements OnInit {
   facturas: Factura[] = [];
   errorMessage: string | null = null;
+  
+  facturaSeleccionada: Factura | null = null;
 
   constructor(private facturaService: FacturaService) { }
 
@@ -28,7 +30,11 @@ export class InvoiceListComponent implements OnInit {
     });
   }
 
-   getEstadoPagoClass(estado: string): string {
+  verDetalles(factura: Factura): void {
+    this.facturaSeleccionada = factura;
+  }
+
+  getEstadoPagoClass(estado: string): string {
     if (!estado) return 'bg-secondary';
     switch (estado.toUpperCase()) {
       case 'PENDIENTE': return 'bg-warning text-dark';
