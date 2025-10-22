@@ -4,11 +4,13 @@ Guia Fork
 2. Abrir el proyecto en VSC (El boton esta arriba a la derecha 'Open in')
 3. Trabajar
 4. Los cambios realizados se veran en 'Local Changes' (El boton esta en la parte de arriba a la izquierda)
-5.
-6.
-7.
-8.
-9.
+5. Dar click en el directorio (carpeta) más arriba para subir todos los cambios (el boton para subir los cambios se llama 'Stage', se encuentra arriba en el medio, en la parte izquierda)
+6. Colocar un nombre y descripción al commit (rellenar los campos que estan en la parte de abajo)
+7. Darle al boton de la parte inferior derecha (Commit File).
+8. En Fork, dirigirme a la rama que estoy trabajando y darle click derecho para mandar un Create Pull Request on Origin 'main'.
+9. Terminado y confirmado (Bill) dirigirme a la rama main para actualizar la rama principal.
+10. Se debe realizar un pull e indicar que quiero traer los cambios de la rama donde he trabajo (Daniella)
+10.1. En caso de que otro haya subido cambios, el Pull se debe realizar al mismo MAIN.
 
 Nota. Escribir o alterar cualquier archivo, se debe realizar en la rama de Daniella.
 Nota. Terminado el trabajo, se debe realizar un Create Pull Request on Origin 'main'.
