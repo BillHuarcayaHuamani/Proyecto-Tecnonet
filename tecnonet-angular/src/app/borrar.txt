@@ -1,1 +1,16 @@
-cONTENIDO DE PRUEBA
+Guia Fork
+
+1. Entrar a la rama (Daniella)
+2. Abrir el proyecto en VSC (El boton esta arriba a la derecha 'Open in')
+3. Trabajar
+4. Los cambios realizados se veran en 'Local Changes' (El boton esta en la parte de arriba a la izquierda)
+5.
+6.
+7.
+8.
+9.
+
+Nota. Escribir o alterar cualquier archivo, se debe realizar en la rama de Daniella.
+Nota. Terminado el trabajo, se debe realizar un Create Pull Request on Origin 'main'.
+Nota. Antes de trabajar, revisar siempre si hay cambios.
+Nota. Si hay cambios, realizar un Pull a la rama que esta más arriba del flujo.
