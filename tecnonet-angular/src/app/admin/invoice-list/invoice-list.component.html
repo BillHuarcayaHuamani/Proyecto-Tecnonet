@@ -1,0 +1,47 @@
+<div class="container py-5">
+    <h2 class="mb-4">Gestión de Facturas</h2>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th># Factura</th>
+                            <th>Contrato ID</th>
+                            <th>Cliente</th>
+                            <th>Fecha Emisión</th>
+                            <th>Fecha Vencimiento</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let factura of facturas">
+                            <th>{{ factura.idFactura }}</th>
+                            <td>{{ factura.contrato.idContrato }}</td>
+                            <td>{{ factura.contrato.usuario.nombre }} {{ factura.contrato.usuario.apellido }}</td>
+                            <td>{{ factura.fechaEmision | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ factura.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ factura.montoTotal | currency:'S/ ' }}</td>
+                            <td>
+                                <span class="badge" [ngClass]="getEstadoPagoClass(factura.estadoPago.nombreEstado)">
+                                    {{ factura.estadoPago.nombreEstado || 'Desconocido' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-info btn-sm">Ver Detalles</button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="facturas.length === 0 && !errorMessage">
+                            <td colspan="8" class="text-center text-muted">No hay facturas registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

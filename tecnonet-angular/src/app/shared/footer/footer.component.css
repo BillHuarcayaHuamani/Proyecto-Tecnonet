@@ -1,0 +1,23 @@
+footer {
+    font-size: 0.9rem;
+}
+
+footer p {
+    color: #adb5bd;
+}
+
+footer h6 {
+    color: #ffffff;
+}
+
+footer .bi {
+    color: #0d6efd;
+}
+
+footer a {
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #ffffff !important;
+}
