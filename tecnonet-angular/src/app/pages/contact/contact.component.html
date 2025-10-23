@@ -5,7 +5,8 @@
       <div class="card shadow-sm border-light">
         <div class="card-body p-4 p-md-5">
           <h2 class="fw-bold mb-3 text-center">Contáctanos</h2>
-          <p class="text-muted mb-4 text-center">Estamos aquí para ayudarte. Completa el formulario y nos pondremos en contacto contigo lo antes posible.</p>
+          <p class="text-muted mb-4 text-center">Estamos aquí para ayudarte. Completa el formulario y nos pondremos en
+            contacto contigo lo antes posible.</p>
 
           <div *ngIf="mensajeEnviado" class="alert alert-success">Mensaje enviado con éxito.</div>
           <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
@@ -38,7 +39,10 @@
               </div>
             </div>
 
-            <button type="submit" class="btn btn-danger btn-lg w-100 mt-4" [disabled]="contactForm.invalid">Enviar Mensaje</button>
+            <button type="submit" class="btn btn-danger btn-lg w-100 mt-4"
+              [disabled]="contactForm.invalid || isSubmitting">
+              {{ isSubmitting ? 'Enviando...' : 'Enviar Mensaje' }}
+            </button>
           </form>
         </div>
       </div>

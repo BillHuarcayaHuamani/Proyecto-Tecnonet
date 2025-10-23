@@ -11,6 +11,7 @@ import { MainLayoutComponent } from './shared/main-layout/main-layout.component'
 import { ServiceListComponent } from './admin/service-list/service-list.component';
 import { MessageListComponent } from './admin/message-list/message-list.component';
 import { InvoiceListComponent } from './admin/invoice-list/invoice-list.component';
+import { DashboardOperarioComponent } from './admin/dashboard-operario/dashboard-operario.component';
 import { authGuard, adminGuard } from './services/auth.guard';
 import { loginGuard } from './services/login.guard';
 
@@ -31,6 +32,7 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         children: [
           { path: '', component: DashboardComponent },
+          { path: 'dashboard-operario', component: DashboardOperarioComponent },
           { path: 'usuarios', component: UserListComponent },
           { path: 'contratos', component: ContractListComponent },
           { path: 'servicios', component: ServiceListComponent },

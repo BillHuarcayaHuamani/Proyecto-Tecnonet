@@ -19,10 +19,11 @@ export class MessageListComponent implements OnInit {
   mensajeExito: string | null = null;
   solicitudSeleccionada: Solicitud | null = null;
   respuestaTexto: string = '';
+  modoVerDetalles: boolean = false;
 
   constructor(
     private solicitudService: SolicitudService,
-    private respuestaService: RespuestaService 
+    private respuestaService: RespuestaService
   ) { }
 
   ngOnInit(): void {
@@ -41,11 +42,12 @@ export class MessageListComponent implements OnInit {
     });
   }
 
-  abrirModalRespuesta(solicitud: Solicitud): void {
+  abrirModalRespuesta(solicitud: Solicitud, verDetalles: boolean = false): void {
     this.solicitudSeleccionada = solicitud;
-    this.respuestaTexto = '';
+    this.respuestaTexto = ''; 
     this.errorMessage = null;
     this.mensajeExito = null;
+    this.modoVerDetalles = verDetalles; 
   }
 
   enviarRespuesta(): void {
@@ -55,11 +57,22 @@ export class MessageListComponent implements OnInit {
     }
 
     const payload = { respuesta: this.respuestaTexto };
-    this.respuestaService.guardarRespuesta(this.solicitudSeleccionada.idSolicitud, payload)
+    const idSolicitudRespondida = this.solicitudSeleccionada.idSolicitud;
+
+    this.respuestaService.guardarRespuesta(idSolicitudRespondida, payload)
       .subscribe({
-        next: (response) => {
+        next: (respuestaGuardada) => {
           this.mensajeExito = "Respuesta enviada exitosamente.";
-          this.solicitudSeleccionada = null; 
+
+          const index = this.mensajes.findIndex(msg => msg.idSolicitud === idSolicitudRespondida);
+          if (index !== -1) {
+            if (!this.mensajes[index].respuestasSolicitudes) {
+              this.mensajes[index].respuestasSolicitudes = [];
+            }
+            this.mensajes[index].respuestasSolicitudes.push(respuestaGuardada || { idRespuesta: Date.now() });
+          }
+
+          this.cerrarModalYLimpiar();
 
           const backdrop = document.querySelector('.modal-backdrop');
           if (backdrop) {
@@ -68,6 +81,7 @@ export class MessageListComponent implements OnInit {
           document.body.classList.remove('modal-open');
           document.body.style.overflow = '';
           document.body.style.paddingRight = '';
+
         },
         error: (err) => {
           console.error("Error al enviar respuesta:", err);
@@ -76,7 +90,14 @@ export class MessageListComponent implements OnInit {
       });
   }
 
+  cerrarModalYLimpiar(): void {
+    this.solicitudSeleccionada = null;
+    this.respuestaTexto = '';
+    this.errorMessage = null;
+    setTimeout(() => this.mensajeExito = null, 3000);
+  }
+
   cerrarModal(): void {
-      this.solicitudSeleccionada = null;
+    this.cerrarModalYLimpiar();
   }
 }

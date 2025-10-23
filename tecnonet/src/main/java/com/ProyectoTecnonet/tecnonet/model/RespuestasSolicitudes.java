@@ -1,6 +1,8 @@
 package com.ProyectoTecnonet.tecnonet.model;
 
 import java.time.LocalDateTime;
+ 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +25,7 @@ public class RespuestasSolicitudes {
     @Column(name = "id_respuesta")
     private Integer idRespuesta;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_solicitud", nullable = false)
     private Solicitudes solicitud;

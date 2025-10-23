@@ -2,30 +2,34 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold">Nuestros Planes Hogar de Internet</h2>
-      <p class="lead text-muted">Descubre nuestras opciones de internet rápido y confiable, diseñadas para ajustarse a tus necesidades y presupuesto.</p>
+      <p class="lead text-muted">Descubre nuestras opciones de internet rápido y confiable, diseñadas para ajustarse a
+        tus necesidades y presupuesto.</p>
     </div>
 
     <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
     <div class="row g-4 justify-content-center">
-      
+
       <div class="col-lg-4 col-md-6" *ngFor="let plan of planes">
         <div class="card h-100 shadow-sm border-light text-center plan-card">
           <div class="card-body p-4 d-flex flex-column">
             <h5 class="fw-bold text-primary">{{ plan.velocidadDescargaMbps }} Mbps</h5>
             <h3 class="card-title h4 fw-bold mb-3">{{ plan.nombrePlan }}</h3>
             <p class="text-muted flex-grow-1">{{ plan.descripcion }}</p>
-            
+
             <ul class="list-unstyled text-start my-4">
-              <li><i class="bi bi-arrow-down-circle text-primary me-2"></i> Descarga: {{ plan.velocidadDescargaMbps }} Mbps</li>
+              <li><i class="bi bi-arrow-down-circle text-primary me-2"></i> Descarga: {{ plan.velocidadDescargaMbps }}
+                Mbps</li>
               <li><i class="bi bi-arrow-up-circle text-info me-2"></i> Carga: {{ plan.velocidadCargaMbps }} Mbps</li>
               <li><i class="bi bi-wifi text-success me-2"></i> Wifi: {{ plan.wifiIncluido ? 'Sí' : 'No' }}</li>
-              <li><i class="bi bi-gift text-warning me-2"></i> Mes gratis: {{ plan.mesGratisPromocion > 0 ? 'Sí' : 'No' }}</li>
+              <li><i class="bi bi-gift text-warning me-2"></i> Mes gratis: {{ plan.mesGratisPromocion > 0 ? 'Sí' : 'No'
+                }}</li>
               <li><i class="bi bi-ethernet text-secondary me-2"></i> Puertos: {{ plan.puertosEthernet }}</li>
             </ul>
-            
+
             <p class="fs-4 fw-bold text-dark my-3">S/ {{ plan.precioMensual.toFixed(2) }} x mes</p>
-            <button class="btn btn-primary btn-lg mt-auto" data-bs-toggle="modal" data-bs-target="#contratarModal" (click)="seleccionarPlan(plan)">
+            <button class="btn btn-primary btn-lg mt-auto" data-bs-toggle="modal" data-bs-target="#contratarModal"
+              (click)="seleccionarPlan(plan)">
               Contratar Plan
             </button>
           </div>
@@ -40,16 +44,18 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold">Beneficios de Elegir Tecnonet</h2>
-      <p class="lead text-muted">Con Tecnonet, disfruta de conexión estable, soporte técnico personalizado las 24 horas y planes que se adaptan a ti.</p>
+      <p class="lead text-muted">Con Tecnonet, disfruta de conexión estable, soporte técnico personalizado las 24 horas
+        y planes que se adaptan a ti.</p>
     </div>
-    
+
     <div class="row g-4">
       <div class="col-md-4">
         <div class="card text-center shadow-sm border-light h-100">
           <div class="card-body p-4">
             <i class="bi bi-speedometer2 display-4 text-primary mb-3"></i>
             <h5 class="card-title fw-bold">Internet de Alta Velocidad</h5>
-            <p class="card-text text-muted">Navega, descarga y juega sin interrupciones con nuestras rápidas velocidades de internet.</p>
+            <p class="card-text text-muted">Navega, descarga y juega sin interrupciones con nuestras rápidas velocidades
+              de internet.</p>
           </div>
         </div>
       </div>
@@ -58,7 +64,8 @@
           <div class="card-body p-4">
             <i class="bi bi-router display-4 text-success mb-3"></i>
             <h5 class="card-title fw-bold">Multiuso</h5>
-            <p class="card-text text-muted">Disfruta de una conexión inalámbrica a distintos dispositivos de vuestro hogar.</p>
+            <p class="card-text text-muted">Disfruta de una conexión inalámbrica a distintos dispositivos de vuestro
+              hogar.</p>
           </div>
         </div>
       </div>
@@ -67,7 +74,8 @@
           <div class="card-body p-4">
             <i class="bi bi-piggy-bank display-4 text-info mb-3"></i>
             <h5 class="card-title fw-bold">Ahorro y Comodidad</h5>
-            <p class="card-text text-muted">Combina tus servicios y ahorra dinero mientras disfrutas de la conveniencia de tener todo en un solo paquete.</p>
+            <p class="card-text text-muted">Combina tus servicios y ahorra dinero mientras disfrutas de la conveniencia
+              de tener todo en un solo paquete.</p>
           </div>
         </div>
       </div>
@@ -79,15 +87,17 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold">Nuestros Servicios</h2>
-      <p class="lead text-muted">En Tecnonet ofrecemos una variedad de servicios para mejorar tu experiencia de conexión.</p>
+      <p class="lead text-muted">En Tecnonet ofrecemos una variedad de servicios para mejorar tu experiencia de
+        conexión.</p>
     </div>
-    
+
     <div class="card shadow-sm border-light overflow-hidden">
       <div class="row g-0">
         <div class="col-md-8 d-flex align-items-center">
           <div class="card-body p-5">
             <h4 class="card-title fw-bold">Descubre Más en Nuestro Video</h4>
-            <p class="card-text text-muted">Muy nuestro video para conocer más sobre cómo Tecnonet puede mejorar tu conexión a internet y los servicios que ofrecemos.</p>
+            <p class="card-text text-muted">Muy nuestro video para conocer más sobre cómo Tecnonet puede mejorar tu
+              conexión a internet y los servicios que ofrecemos.</p>
             <a href="#" class="btn btn-primary">Ver Video</a>
           </div>
         </div>
@@ -155,8 +165,31 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="confirmarContratacion()" data-bs-dismiss="modal">Confirmar Contratación</button>
+        <button type="button" class="btn btn-primary" (click)="confirmarContratacion()"
+          data-bs-dismiss="modal">Confirmar Contratación</button>
       </div>
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true"
+  [class.show]="showSuccessModal" [style.display]="showSuccessModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">¡Contratación Exitosa!</h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeSuccessModal()"
+          aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tu solicitud de contrato ha sido registrada correctamente. 👍</p>
+        <p>El estado inicial es "Pendiente de Activación". Nuestro equipo se pondrá en contacto contigo pronto.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="closeSuccessModal()">Entendido</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop fade" [class.show]="showSuccessModal" *ngIf="showSuccessModal"></div>

@@ -1,7 +1,7 @@
 <div class="container py-5">
     <h2 class="mb-4">Mis Facturas</h2>
 
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="errorMessage && !showPaymentModal" class="alert alert-danger">{{ errorMessage }}</div>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -21,23 +21,22 @@
                     <tbody>
                         <tr *ngFor="let factura of facturas">
                             <th>{{ factura.idFactura }}</th>
-                            <td>{{ factura.contrato.plan.nombrePlan }}</td>
+                            <td>Contrato #{{ factura.idContrato }}</td>
                             <td>{{ factura.fechaEmision | date:'dd/MM/yyyy' }}</td>
                             <td>{{ factura.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
                             <td>{{ factura.montoTotal | currency:'S/ ' }}</td>
                             <td>
-                                <span class="badge" [ngClass]="getEstadoPagoClass(factura.estadoPago.nombreEstado)">
-                                    {{ factura.estadoPago.nombreEstado || 'Desconocido' }}
+                                <span class="badge" [ngClass]="getEstadoPagoClass(factura.nombreEstadoPago)">
+                                    {{ factura.nombreEstadoPago || 'Desconocido' }}
                                 </span>
                             </td>
                             <td>
                                 <button class="btn btn-success btn-sm"
-                                    *ngIf="factura.estadoPago.nombreEstado.toUpperCase() === 'PENDIENTE'"
-                                    (click)="pagarFactura(factura.idFactura)">
-                                    Pagar
+                                    *ngIf="factura.nombreEstadoPago.toUpperCase() === 'PENDIENTE'"
+                                    (click)="pagarFactura(factura)"> Pagar
                                 </button>
                                 <button class="btn btn-info btn-sm" [disabled]="true"
-                                    *ngIf="factura.estadoPago.nombreEstado.toUpperCase() !== 'PENDIENTE'">
+                                    *ngIf="factura.nombreEstadoPago.toUpperCase() !== 'PENDIENTE'">
                                     Ver Detalle
                                 </button>
                             </td>
@@ -51,3 +50,47 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true"
+    [class.show]="showPaymentModal" [style.display]="showPaymentModal ? 'block' : 'none'">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" *ngIf="facturaAPagar">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="paymentModalLabel">Confirmar Pago de Factura #{{ facturaAPagar.idFactura }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" (click)="closePaymentModal()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Estás a punto de pagar la siguiente factura:</p>
+                <ul>
+                    <li><strong>Descripción:</strong> {{ facturaAPagar.descripcion }}</li>
+                    <li><strong>Monto Total:</strong> {{ facturaAPagar.montoTotal | currency:'S/ ' }}</li>
+                    <li><strong>Fecha Vencimiento:</strong> {{ facturaAPagar.fechaVencimiento | date:'dd/MM/yyyy' }}
+                    </li>
+                </ul>
+
+                <div class="mb-3">
+                    <label for="metodoPagoSelect" class="form-label">Selecciona un método de pago:</label>
+                    <select class="form-select" id="metodoPagoSelect" [(ngModel)]="metodoPagoSeleccionado">
+                        <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                        <option value="Yape/Plin">Yape/Plin</option>
+                        <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                    </select>
+                </div>
+
+                <div *ngIf="paymentErrorMessage" class="alert alert-danger mt-3">{{ paymentErrorMessage }}</div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closePaymentModal()">Cancelar</button>
+                <button type="button" class="btn btn-primary" (click)="confirmarPago()"
+                    [disabled]="!metodoPagoSeleccionado">
+                    Confirmar Pago
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop fade" [class.show]="showPaymentModal" *ngIf="showPaymentModal"></div>
