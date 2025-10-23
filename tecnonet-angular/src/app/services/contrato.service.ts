@@ -27,4 +27,8 @@ export class ContratoService {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+
+  crearContrato(contratoData: any): Observable<Contrato> {
+    return this.http.post<Contrato>(this.apiUrl, contratoData);
+  }
 }

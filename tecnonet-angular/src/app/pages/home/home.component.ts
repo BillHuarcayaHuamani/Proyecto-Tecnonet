@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { PlanService } from '../../services/plan.service';
 import { Plan } from '../../models/plan.model';
 import { AuthService } from '../../services/auth.service';
+import { ContratoService } from '../../services/contrato.service'; 
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-home',
@@ -24,13 +26,15 @@ export class HomeComponent implements OnInit {
   constructor(
     private planService: PlanService,
     private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private contratoService: ContratoService, 
+    private router: Router 
   ) {
     this.contratoForm = this.fb.group({
       nombreCliente: [{ value: '', disabled: true }],
       apellidoCliente: [{ value: '', disabled: true }],
       emailCliente: [{ value: '', disabled: true }],
-      costoInstalacion: [70.00, Validators.required],
+      costoInstalacion: [{ value: 70.00, disabled: true }, Validators.required],
       direccionInstalacion: ['', Validators.required],
       numeroTelefonoContacto: ['', Validators.required],
       metodoPago: ['Transferencia Bancaria', Validators.required],
@@ -55,7 +59,7 @@ export class HomeComponent implements OnInit {
         this.datosUsuario = {
           id: user.id,
           nombre: user.nombre,
-          apellido: '', 
+          apellido: user.apellido || '', 
           email: user.sub 
         };
         
@@ -78,15 +82,20 @@ export class HomeComponent implements OnInit {
       return;
     }
     
+    if (!this.datosUsuario) {
+      alert("Error: No se han podido cargar los datos del usuario. Por favor, inicie sesión de nuevo.");
+      return;
+    }
+    
     const formData = this.contratoForm.getRawValue();
+    const fechaInicio = formData.fechaInicioServicio || new Date().toISOString().split('T')[0];
     
     const nuevoContrato = {
       idUsuario: this.datosUsuario.id,
       idPlan: this.planSeleccionado.idPlan,
-      idEstadoContrato: 1,
       fechaContratacion: new Date().toISOString().split('T')[0],
-      fechaInicioServicio: formData.fechaInicioServicio || new Date().toISOString().split('T')[0],
-      fechaFinContrato: this.calcularFechaFin(formData.fechaInicioServicio),
+      fechaInicioServicio: fechaInicio,
+      fechaFinContrato: this.calcularFechaFin(fechaInicio),
       direccionInstalacion: formData.direccionInstalacion,
       numeroTelefonoContacto: formData.numeroTelefonoContacto,
       metodoPago: formData.metodoPago,
@@ -94,7 +103,16 @@ export class HomeComponent implements OnInit {
       observaciones: formData.observaciones
     };
 
-    console.log("Enviando nuevo contrato (simulado):", nuevoContrato);
+    this.contratoService.crearContrato(nuevoContrato).subscribe({
+      next: (contratoCreado) => {
+        console.log("Contrato creado exitosamente:", contratoCreado);
+        alert("¡Contratación exitosa! Su contrato está pendiente de activación.");
+      },
+      error: (err) => {
+        console.error("Error al crear el contrato:", err);
+        alert("Hubo un error al procesar su solicitud. Por favor, intente más tarde.");
+      }
+    });
   }
 
   private calcularFechaFin(fechaInicio: string): string {

@@ -16,10 +16,7 @@ import { ReplacePipe } from '../../shared/pipes/replace.pipe';
 export class ContractListComponent implements OnInit {
   
   contratos: Contrato[] = [];
-  estadosContrato: EstadoContrato[] = []; 
-  
-  estadosDisponibles: EstadoContrato[] = []; 
-
+  estadosContrato: EstadoContrato[] = [];
   errorMessage: string | null = null;
   successMessage: string | null = null;
   contratoSeleccionado: Contrato | null = null;
@@ -47,17 +44,39 @@ export class ContractListComponent implements OnInit {
     this.contratoService.getEstadoContratos().subscribe({
       next: (data) => {
         this.estadosContrato = data; 
-        
-        this.estadosDisponibles = data.filter(estado => 
-          estado.idEstadoContrato === 1 || estado.idEstadoContrato === 2
-        );
       },
       error: (err) => {
         console.error("Error al cargar estados:", err);
       }
     });
   }
+  
+  getOpcionesDeEstado(contrato: Contrato): EstadoContrato[] {
+    const estadoActual = contrato.estadoContrato;
+    
+    if (!estadoActual || this.estadosContrato.length === 0) {
+      return [];
+    }
 
+    let opciones: EstadoContrato[] = [estadoActual];
+
+    switch (estadoActual.nombreEstado) {
+      case 'Pendiente de Activación':
+        opciones.push(...this.estadosContrato.filter(e => 
+          e.idEstadoContrato === 1 || e.idEstadoContrato === 4
+        ));
+        break;
+      case 'Activo':
+        opciones.push(...this.estadosContrato.filter(e => 
+          e.idEstadoContrato === 3 || e.idEstadoContrato === 4
+        ));
+        break;
+    }
+    
+    return opciones;
+  }
+  
+  
   onEstadoChange(contrato: Contrato, event: Event): void {
     this.errorMessage = null;
     this.successMessage = null;
@@ -65,6 +84,8 @@ export class ContractListComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     const nuevoEstadoId = Number(selectElement.value);
     const estadoOriginalId = contrato.estadoContrato.idEstadoContrato;
+
+    if (nuevoEstadoId === estadoOriginalId) return;
 
     this.contratoService.actualizarEstado(contrato.idContrato, nuevoEstadoId).subscribe({
       next: (contratoActualizado) => {
@@ -74,7 +95,7 @@ export class ContractListComponent implements OnInit {
         }
         
         this.mostrarMensajeExito("Estado actualizado con éxito.");
-        if(nuevoEstadoId === 1) { 
+        if(nuevoEstadoId === 1 && estadoOriginalId === 2) { 
             this.mostrarMensajeExito("Estado actualizado. Generando facturas...", 5000);
         }
       },
@@ -92,22 +113,22 @@ export class ContractListComponent implements OnInit {
   
   getEstadoClass(estadoNombre: string): string {
     if (!estadoNombre) return 'bg-secondary';
-    switch (estadoNombre.toUpperCase()) {
-      case 'ACTIVO': return 'bg-success text-white';
-      case 'PENDIENTE DE INSTALACIÓN': return 'bg-warning text-dark';
-      case 'CANCELADO': return 'bg-danger text-white';
-      case 'FINALIZADO': return 'bg-info text-dark';
+    switch (estadoNombre) {
+      case 'Activo': return 'bg-success text-white';
+      case 'Pendiente de Activación': return 'bg-warning text-dark';
+      case 'Cancelado': return 'bg-danger text-white';
+      case 'Finalizado': return 'bg-info text-dark';
       default: return 'bg-secondary text-white';
     }
   }
 
   getSelectBackgroundClass(estadoNombre: string): string {
       if (!estadoNombre) return '';
-      switch (estadoNombre.toUpperCase()) {
-        case 'ACTIVO': return 'bg-success text-white';
-        case 'PENDIENTE DE INSTALACIÓN': return 'bg-warning text-dark';
-        case 'CANCELADO': return 'bg-danger text-white';
-        case 'FINALIZADO': return 'bg-info text-dark';
+      switch (estadoNombre) {
+        case 'Activo': return 'bg-success text-white';
+        case 'Pendiente de Activación': return 'bg-warning text-dark';
+        case 'Cancelado': return 'bg-danger text-white';
+        case 'Finalizado': return 'bg-info text-dark';
         default: return 'bg-secondary text-white';
       }
   }
