@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { PlanService } from '../../services/plan.service';
 import { Plan } from '../../models/plan.model';
 import { AuthService } from '../../services/auth.service';
-import { ContratoService } from '../../services/contrato.service'; 
-import { Router } from '@angular/router'; 
+import { ContratoService } from '../../services/contrato.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -17,18 +17,18 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
   planes: Plan[] = [];
   error: string | null = null;
-  
   planSeleccionado: Plan | null = null;
   contratoForm: FormGroup;
-  
   datosUsuario: any = null;
+
+  showSuccessModal: boolean = false;
 
   constructor(
     private planService: PlanService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private contratoService: ContratoService, 
-    private router: Router 
+    private contratoService: ContratoService,
+    private router: Router
   ) {
     this.contratoForm = this.fb.group({
       nombreCliente: [{ value: '', disabled: true }],
@@ -59,10 +59,9 @@ export class HomeComponent implements OnInit {
         this.datosUsuario = {
           id: user.id,
           nombre: user.nombre,
-          apellido: user.apellido || '', 
-          email: user.sub 
+          apellido: user.apellido || '',
+          email: user.sub
         };
-        
         this.contratoForm.patchValue({
           nombreCliente: this.datosUsuario.nombre,
           apellidoCliente: this.datosUsuario.apellido,
@@ -74,6 +73,15 @@ export class HomeComponent implements OnInit {
 
   seleccionarPlan(plan: Plan): void {
     this.planSeleccionado = plan;
+    this.contratoForm.reset({
+        nombreCliente: this.datosUsuario?.nombre,
+        apellidoCliente: this.datosUsuario?.apellido,
+        emailCliente: this.datosUsuario?.email,
+        costoInstalacion: 70.00,
+        metodoPago: 'Transferencia Bancaria',
+        fechaInicioServicio: '',
+        observaciones: ''
+      });
   }
 
   confirmarContratacion(): void {
@@ -81,15 +89,14 @@ export class HomeComponent implements OnInit {
       alert("Por favor, complete todos los campos requeridos.");
       return;
     }
-    
     if (!this.datosUsuario) {
       alert("Error: No se han podido cargar los datos del usuario. Por favor, inicie sesión de nuevo.");
       return;
     }
-    
+
     const formData = this.contratoForm.getRawValue();
     const fechaInicio = formData.fechaInicioServicio || new Date().toISOString().split('T')[0];
-    
+
     const nuevoContrato = {
       idUsuario: this.datosUsuario.id,
       idPlan: this.planSeleccionado.idPlan,
@@ -106,13 +113,27 @@ export class HomeComponent implements OnInit {
     this.contratoService.crearContrato(nuevoContrato).subscribe({
       next: (contratoCreado) => {
         console.log("Contrato creado exitosamente:", contratoCreado);
-        alert("¡Contratación exitosa! Su contrato está pendiente de activación.");
+        this.showSuccessModal = true;
+         this.contratoForm.reset({
+            nombreCliente: this.datosUsuario?.nombre,
+            apellidoCliente: this.datosUsuario?.apellido,
+            emailCliente: this.datosUsuario?.email,
+            costoInstalacion: 70.00,
+            metodoPago: 'Transferencia Bancaria',
+            fechaInicioServicio: '',
+            observaciones: ''
+          });
+          this.planSeleccionado = null;
       },
       error: (err) => {
         console.error("Error al crear el contrato:", err);
         alert("Hubo un error al procesar su solicitud. Por favor, intente más tarde.");
       }
     });
+  }
+
+  closeSuccessModal(): void {
+    this.showSuccessModal = false;
   }
 
   private calcularFechaFin(fechaInicio: string): string {

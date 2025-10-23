@@ -50,6 +50,9 @@ public class Contrato {
 
     @Column(name = "fecha_fin_contrato", nullable = false)
     private LocalDate fechaFinContrato;
+    
+    @Column(name = "fecha_activacion") 
+    private LocalDate fechaActivacion; 
 
     @Column(name = "direccion_instalacion", nullable = false, length = 255)
     private String direccionInstalacion;
@@ -67,7 +70,7 @@ public class Contrato {
     private String observaciones;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "contrato", cascade = CascadeType.REMOVE) 
+    @OneToMany(mappedBy = "contrato", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Factura> facturas;
 }

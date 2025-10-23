@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService, DecodedToken } from '../../services/auth.service';
 import { Observable } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +16,27 @@ export class HeaderComponent {
 
   currentUser$: Observable<DecodedToken | null>;
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(
+    public authService: AuthService,
+    private router: Router
+    ) {
     this.currentUser$ = this.authService.currentUser;
+  }
+
+  async handleBrandClick(): Promise<void> {
+    const user = await firstValueFrom(this.currentUser$);
+
+    if (user) {
+      if (this.authService.hasRole('Operario')) {
+        this.router.navigate(['/admin/dashboard-operario']);
+      } else if (this.authService.hasRole('Administrador')) {
+        this.router.navigate(['/admin']);
+      } else {
+        this.router.navigate(['/home']);
+      }
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 
   logout(): void {

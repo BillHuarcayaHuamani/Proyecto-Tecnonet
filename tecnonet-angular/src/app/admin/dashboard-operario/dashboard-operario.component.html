@@ -1,0 +1,97 @@
+<main class="main-content">
+    <div class="metrics-grid">
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-title">Contratos Pendientes de Activación</span>
+                <div class="metric-icon yellow"> <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701.478 1.236 1.011 1.492A3.5 3.5 0 0 0 11.5 13v1h-7v-1a3.5 3.5 0 0 0 1.989-3.158C6.978 9.586 7.5 9.052 7.5 8.351z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="metric-value">{{ contratosPendientesCount }}</div>
+            </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-title">Solicitudes/Mensajes Nuevos</span>
+                <div class="metric-icon pink"> <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                       <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                       <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                    </svg>
+                </div>
+            </div>
+             <div class="metric-value">{{ solicitudesNuevasCount }}</div>
+            </div>
+
+        <div class="metric-card">
+            <div class="metric-header">
+                <span class="metric-title">Contratos Activados Hoy</span>
+                <div class="metric-icon cyan"> <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                       <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
+                       <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                    </svg>
+                </div>
+            </div>
+             <div class="metric-value">{{ contratosActivadosHoyCount }}</div>
+            </div>
+
+        </div> <div class="dashboard-sections">
+
+        <div class="section low-stock-section"> <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                           <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701.478 1.236 1.011 1.492A3.5 3.5 0 0 0 11.5 13v1h-7v-1a3.5 3.5 0 0 0 1.989-3.158C6.978 9.586 7.5 9.052 7.5 8.351z"/>
+                        </svg>
+                        Contratos Pendientes de Activar
+                    </div>
+                    <div class="section-subtitle">Contratos esperando activación o cancelación</div>
+                </div>
+                <a routerLink="/admin/contratos" class="btn-secondary">Ver Todos</a>
+            </div>
+
+            <div class="stock-list"> <div class="stock-item" *ngFor="let contrato of contratosPendientes">
+                    <div class="stock-info">
+                        <div class="stock-name">{{ contrato.usuario.nombre }} {{ contrato.usuario.apellido }} ({{ contrato.plan.nombrePlan }})</div>
+                        <div class="order-company">Fecha Contratación: {{ contrato.fechaContratacion | date:'dd/MM/yyyy' }}</div>
+                    </div>
+                    <div class="stock-quantity">ID: {{ contrato.idContrato }}</div>
+                    <button class="btn-primary" (click)="irAContrato(contrato.idContrato)">Gestionar</button>
+                </div>
+                 <div *ngIf="contratosPendientes?.length === 0" class="text-muted text-center py-3">
+                   No hay contratos pendientes.
+                 </div>
+            </div>
+        </div>
+
+        <div class="section recent-orders-section"> <div class="section-header">
+                <div>
+                    <div class="section-title">
+                         <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                           <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                           <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                        Solicitudes Recientes
+                    </div>
+                    <div class="section-subtitle">Últimos mensajes o solicitudes de soporte recibidos</div>
+                </div>
+                 <a routerLink="/admin/mensajes" class="btn-secondary">Ver Todas</a>
+            </div>
+
+            <div class="orders-list">
+                 <div class="order-item" *ngFor="let solicitud of solicitudesRecientes">
+                    <div class="order-info">
+                        <div class="order-id">Usuario: {{ solicitud.usuario.nombre }} {{ solicitud.usuario.apellido }}</div>
+                        <div class="order-company">Asunto: {{ solicitud.asunto }}</div>
+                    </div>
+                    <div class="order-amount">{{ solicitud.fechaEnvio | date:'dd/MM/yyyy HH:mm' }}</div>
+                    <button class="btn-primary" (click)="irASolicitud(solicitud.idSolicitud)">Responder</button>
+                </div>
+                 <div *ngIf="solicitudesRecientes?.length === 0" class="text-muted text-center py-3">
+                   No hay solicitudes recientes.
+                 </div>
+            </div>
+        </div>
+
+    </div> </main>

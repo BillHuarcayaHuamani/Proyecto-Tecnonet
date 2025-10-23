@@ -37,10 +37,15 @@
                                     class="badge bg-warning text-dark">Pendiente</span>
                             </td>
                             <td>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#respuestaModal" (click)="abrirModalRespuesta(msg)"
-                                    [disabled]="msg.respuestasSolicitudes && msg.respuestasSolicitudes.length > 0">
+                                <button *ngIf="!msg.respuestasSolicitudes || msg.respuestasSolicitudes.length === 0"
+                                    class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#respuestaModal" (click)="abrirModalRespuesta(msg)">
                                     Responder
+                                </button>
+
+                                <button *ngIf="msg.respuestasSolicitudes && msg.respuestasSolicitudes.length > 0"
+                                    class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#respuestaModal"
+                                    (click)="abrirModalRespuesta(msg, true)"> Ver Detalles
                                 </button>
                             </td>
                         </tr>
@@ -72,9 +77,16 @@
                     <p class="border p-2 bg-light rounded">{{ solicitudSeleccionada.mensaje }}</p>
                 </div>
 
-                <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+                <hr>
+                <div
+                    *ngIf="modoVerDetalles && solicitudSeleccionada.respuestasSolicitudes && solicitudSeleccionada.respuestasSolicitudes.length > 0">
+                    <h5>Respuesta Enviada:</h5>
+                    <p class="border p-2 bg-light-success rounded">{{
+                        solicitudSeleccionada.respuestasSolicitudes[0].respuesta }}</p>
+                </div>
 
-                <form (ngSubmit)="enviarRespuesta()">
+                <form *ngIf="!modoVerDetalles" (ngSubmit)="enviarRespuesta()">
+                    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
                     <div class="mb-3">
                         <label for="respuestaTexto" class="form-label">Tu Respuesta:</label>
                         <textarea class="form-control" id="respuestaTexto" name="respuestaTexto" rows="5"
@@ -83,10 +95,16 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             (click)="cerrarModal()">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" [disabled]="!respuestaTexto.trim()">Enviar
+                        <button type="submit" class="btn btn-primary"
+                            [disabled]="!respuestaTexto.trim() || !solicitudSeleccionada">Enviar
                             Respuesta</button>
                     </div>
                 </form>
+            </div>
+
+            <div class="modal-footer" *ngIf="modoVerDetalles">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                    (click)="cerrarModal()">Cerrar</button>
             </div>
         </div>
     </div>

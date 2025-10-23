@@ -10,6 +10,7 @@ export interface Contrato {
   fechaContratacion: string;
   fechaInicioServicio: string;
   fechaFinContrato: string;
+  fechaActivacion?: string; 
   direccionInstalacion: string;
   numeroTelefonoContacto: string;
   metodoPago: string;
