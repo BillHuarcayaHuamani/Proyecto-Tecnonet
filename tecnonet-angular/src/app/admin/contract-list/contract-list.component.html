@@ -28,10 +28,11 @@
                                 <select class="form-select form-select-sm"
                                     [ngModel]="contrato.estadoContrato.idEstadoContrato"
                                     (change)="onEstadoChange(contrato, $event)"
-                                    [disabled]="contrato.estadoContrato.idEstadoContrato === 1"
+                                    [disabled]="contrato.estadoContrato.nombreEstado === 'Finalizado' || contrato.estadoContrato.nombreEstado === 'Cancelado'"
                                     [ngClass]="getSelectBackgroundClass(contrato.estadoContrato.nombreEstado)">
 
-                                    <option *ngFor="let estado of estadosDisponibles" [value]="estado.idEstadoContrato">
+                                    <option *ngFor="let estado of getOpcionesDeEstado(contrato)"
+                                        [value]="estado.idEstadoContrato">
                                         {{ estado.nombreEstado }}
                                     </option>
                                 </select>

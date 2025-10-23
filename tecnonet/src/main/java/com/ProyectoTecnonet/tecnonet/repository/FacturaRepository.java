@@ -2,9 +2,11 @@ package com.ProyectoTecnonet.tecnonet.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param; // Import Param
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ProyectoTecnonet.tecnonet.model.Contrato;
@@ -21,6 +23,21 @@ public interface FacturaRepository extends JpaRepository<Factura, Integer> {
     List<Factura> findAllWithDetails();
 
     @Query("SELECT f FROM Factura f JOIN FETCH f.estadoPago ep " +
-            "WHERE ep.idEstadoPago = 1 AND f.fechaVencimiento < :fechaActual")
+           "WHERE ep.idEstadoPago = 1 AND f.fechaVencimiento < :fechaActual")
     List<Factura> findFacturasPendientesVencidas(@Param("fechaActual") LocalDate fechaActual);
+
+    @Query("SELECT f FROM Factura f JOIN f.estadoPago ep " +
+           "WHERE f.contrato = :contrato " +
+           "AND f.fechaEmision > :fechaActual " + 
+           "AND ep.idEstadoPago IN (1, 3)")
+    List<Factura> findFacturasFuturasPendientesOVencidas(@Param("contrato") Contrato contrato, 
+                                                         @Param("fechaActual") LocalDate fechaActual);
+
+    @Query("SELECT f FROM Factura f JOIN f.estadoPago ep " +
+           "WHERE f.contrato = :contrato " +
+           "AND f.fechaEmision BETWEEN :inicioMes AND :finMes " +
+           "AND ep.idEstadoPago = 1")
+    Optional<Factura> findFacturaPendienteDelMes(@Param("contrato") Contrato contrato,
+                                                 @Param("inicioMes") LocalDate inicioMes,
+                                                 @Param("finMes") LocalDate finMes);
 }
