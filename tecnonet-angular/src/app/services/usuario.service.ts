@@ -34,7 +34,16 @@ export class UsuarioService {
     return this.http.post<AuthResponse>(`${this.authApiUrl}/register`, userData);
   }
 
+  crearPersonal(userData: RegisterRequest): Observable<Usuario> {
+    return this.http.post<Usuario>(this.usersApiUrl, userData);
+  }
+
   getUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(this.usersApiUrl);
+  }
+
+  cambiarRol(idUsuario: number, idNuevoRol: number): Observable<Usuario> {
+    const url = `${this.usersApiUrl}/${idUsuario}/rol`;
+    return this.http.put<Usuario>(url, { idRol: idNuevoRol });
   }
 }
