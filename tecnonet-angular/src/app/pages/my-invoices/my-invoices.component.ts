@@ -35,7 +35,11 @@ export class MyInvoicesComponent implements OnInit {
     this.errorMessage = null;
     this.facturaService.getMisFacturas().subscribe({ 
       next: (data) => {
-        this.facturas = data; 
+        this.facturas = data.sort((a, b) => {
+          const dateA = new Date(a.fechaEmision).getTime();
+          const dateB = new Date(b.fechaEmision).getTime();
+          return dateA - dateB; 
+        });
       },
       error: (err) => {
         console.error("Error al cargar mis facturas:", err);
@@ -57,7 +61,6 @@ export class MyInvoicesComponent implements OnInit {
   }
 
   pagarFactura(factura: FacturaDTO): void {
-    console.log("Abriendo modal de pago para factura ID:", factura.idFactura);
     this.facturaAPagar = factura; 
     this.metodoPagoSeleccionado = 'Tarjeta de Crédito';
     this.paymentErrorMessage = null;
@@ -81,21 +84,20 @@ export class MyInvoicesComponent implements OnInit {
 
     this.facturaService.marcarComoPagada(facturaId, metodoPago).subscribe({ 
       next: (facturaActualizadaDTO) => {
-        console.log("Factura pagada:", facturaActualizadaDTO);
         this.cargarMisFacturas(); 
         this.closePaymentModal();
       },
       error: (err) => {
         console.error("Error al marcar como pagada:", err);
         if (err.status === 400 && err.error?.error) { 
-           this.paymentErrorMessage = err.error.error;
+          this.paymentErrorMessage = err.error.error;
         } else if (err.status === 403 && err.error?.error) {
             this.paymentErrorMessage = err.error.error;
         } else if (err.status === 404 && err.error?.error){
             this.paymentErrorMessage = err.error.error;
         }
-         else {
-           this.paymentErrorMessage = "Error al procesar el pago. Inténtalo más tarde.";
+        else {
+          this.paymentErrorMessage = "Error al procesar el pago. Inténtalo más tarde.";
         }
       }
     });

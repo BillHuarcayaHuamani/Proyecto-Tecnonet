@@ -1,7 +1,19 @@
 <div class="container py-5">
-    <h2 class="mb-4">Usuarios Registrados</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Gestión de Usuarios y Roles</h2>
+        <button *ngIf="esAdmin" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearPersonalModal">
+            <i class="bi bi-person-plus-fill me-2"></i>Crear Personal
+        </button>
+    </div>
 
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
+        {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = null"></button>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show">
+        {{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = null"></button>
+    </div>
 
     <div class="card shadow-sm">
         <div class="card-body">
@@ -10,34 +22,114 @@
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Nombre</th>
-                            <th scope="col">Apellido</th>
+                            <th scope="col">Nombre Completo</th>
                             <th scope="col">Correo Electrónico</th>
-                            <th scope="col">Tipo de Usuario</th>
-                            <th scope="col">Activo</th>
-                            <th scope="col">Fecha de Registro</th>
+                            <th scope="col">Rol Actual</th>
+                            <th scope="col" *ngIf="esAdmin">Cambiar Rol</th>
+                            <th scope="col">Estado</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let usuario of usuarios">
-                            <th scope="row">{{ usuario.idUsuario }}</th>
-                            <td>{{ usuario.nombre }}</td>
-                            <td>{{ usuario.apellido }}</td>
-                            <td>{{ usuario.email }}</td>
-                            <td>{{ usuario.rol.nombreRol }}</td>
+                        <tr *ngFor="let usuario of usuarios; let i = index">
+                            <th scope="row">{{ i + 1 }}</th>
+                            <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+                            <td><span class="fw-bold">{{ usuario.email }}</span></td>
                             <td>
-                                <span class="badge" [ngClass]="usuario.activo ? 'bg-success' : 'bg-danger'">
-                                    {{ usuario.activo ? 'Sí' : 'No' }}
+                                <span class="badge" 
+                                    [ngClass]="{
+                                        'bg-danger': usuario.rol.nombreRol === 'Administrador',
+                                        'bg-warning text-dark': usuario.rol.nombreRol === 'Operario',
+                                        'bg-primary': usuario.rol.nombreRol === 'Cliente'
+                                    }">
+                                    {{ usuario.rol.nombreRol }}
                                 </span>
                             </td>
-                            <td>{{ usuario.fechaRegistro | date: 'dd-MM-yyyy HH:mm' }}</td>
+                            <td *ngIf="esAdmin">
+                                <select class="form-select form-select-sm" 
+                                        [ngModel]="usuario.rol.idRol" 
+                                        (change)="cambiarRol(usuario, $any($event.target).value)">
+                                    <option [value]="usuario.rol.idRol" hidden>{{ usuario.rol.nombreRol }}</option>
+                                    <option *ngFor="let rol of rolesDisponibles" [value]="rol.id">
+                                        {{ rol.nombre }}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <span class="badge" [ngClass]="usuario.activo ? 'bg-success' : 'bg-secondary'">
+                                    {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                                </span>
+                            </td>
                         </tr>
-
                         <tr *ngIf="usuarios.length === 0 && !errorMessage">
-                            <td colspan="7" class="text-center text-muted">No hay usuarios registrados.</td>
+                            <td [attr.colspan]="esAdmin ? 6 : 5" class="text-center text-muted">No hay usuarios.</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="crearPersonalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Registrar Nuevo Personal</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="nuevoPersonalForm" (ngSubmit)="crearPersonal()">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Tipo de Personal</label>
+                        <select class="form-select" formControlName="rolTipo" (change)="onRolChange()">
+                            <option *ngFor="let rol of rolesCreacion" [value]="rol.dominio">
+                                {{ rol.nombre }} ({{ rol.dominio }})
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" formControlName="nombre">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Apellido</label>
+                            <input type="text" class="form-control" formControlName="apellido">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo Institucional</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control text-end" formControlName="emailPrefix" placeholder="usuario">
+                            <span class="input-group-text fw-bold">{{ dominioSeleccionado }}</span>
+                        </div>
+                        <div *ngIf="nuevoPersonalForm.get('emailPrefix')?.invalid && nuevoPersonalForm.get('emailPrefix')?.touched" class="text-danger small mt-1">
+                            Solo se permiten letras y números.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <div class="input-group">
+                            <input [type]="mostrarPassword ? 'text' : 'password'" class="form-control" formControlName="password">
+                            <button type="button" class="btn btn-outline-secondary" (click)="toggleMostrarPassword()">
+                                <i class="bi" [ngClass]="mostrarPassword ? 'bi-eye-slash-fill' : 'bi-eye-fill'"></i>
+                            </button>
+                        </div>
+                        <div *ngIf="nuevoPersonalForm.get('password')?.invalid && nuevoPersonalForm.get('password')?.touched" class="text-danger small mt-1">
+                            La contraseña debe tener al menos 6 caracteres.
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="nuevoPersonalForm.invalid">
+                            Crear Usuario
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -28,7 +28,7 @@ public class PlanController {
 
     @GetMapping
     public List<Plan> getAllPlanes() {
-        return planRepository.findAll();
+        return planRepository.findByActivoTrue();
     }
 
     @PostMapping
@@ -63,7 +63,9 @@ public class PlanController {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new RuntimeException("Plan no encontrado con id :: " + planId));
 
-        planRepository.delete(plan);
+        plan.setActivo(false);
+        planRepository.save(plan);
+        
         return ResponseEntity.ok().build();
     }
 }
