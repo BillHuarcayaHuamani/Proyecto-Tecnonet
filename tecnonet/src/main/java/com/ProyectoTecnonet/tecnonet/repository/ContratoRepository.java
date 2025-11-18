@@ -13,11 +13,22 @@ import com.ProyectoTecnonet.tecnonet.model.Contrato;
 @Repository
 public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
 
+    long countByEstadoContratoNombreEstado(String nombreEstado);
+
+    @Query("SELECT c FROM Contrato c " +
+            "JOIN FETCH c.usuario u " +
+            "JOIN FETCH c.plan p " +
+            "JOIN FETCH c.estadoContrato e " +
+            "WHERE e.nombreEstado = :nombreEstado " +
+            "ORDER BY c.fechaContratacion DESC")
+    List<Contrato> findTop5ByEstadoContratoNombreEstadoOrderByFechaContratacionDesc(
+            @Param("nombreEstado") String nombreEstado);
+
     @Query("SELECT c FROM Contrato c JOIN FETCH c.usuario u JOIN FETCH c.plan p JOIN FETCH c.estadoContrato e")
     List<Contrato> findAllWithDetails();
 
     @Query("SELECT c FROM Contrato c JOIN FETCH c.plan p JOIN c.estadoContrato ec " +
-           "WHERE ec.idEstadoContrato = :idEstadoActivo AND FUNCTION('DAY', c.fechaInicioServicio) = :diaDelMes")
+            "WHERE ec.idEstadoContrato = :idEstadoActivo AND FUNCTION('DAY', c.fechaInicioServicio) = :diaDelMes")
     List<Contrato> findContratosActivosParaFacturar(@Param("idEstadoActivo") Integer idEstadoActivo,
             @Param("diaDelMes") int diaDelMes);
 

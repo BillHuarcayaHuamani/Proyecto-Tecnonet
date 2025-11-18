@@ -37,12 +37,17 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
           this.successMessage = response.message;
-          if (this.authService.isAdmin()) {
+          if (this.authService.hasRole('Administrador')) {
             this.router.navigate(['/admin']);
+          } else if (this.authService.hasRole('Operario')) {
+            this.router.navigate(['/admin/dashboard-operario']);
+          } else if (this.authService.hasRole('Cliente')) {
+            this.router.navigate(['/home']);
           } else {
             this.router.navigate(['/home']);
           }
         },
+
         error: (err) => {
           this.errorMessage = err.error?.message || 'Error en el servidor.';
           console.error('Error en el login:', err);

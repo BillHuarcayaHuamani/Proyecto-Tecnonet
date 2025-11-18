@@ -12,6 +12,7 @@ import { ServiceListComponent } from './admin/service-list/service-list.componen
 import { MessageListComponent } from './admin/message-list/message-list.component';
 import { InvoiceListComponent } from './admin/invoice-list/invoice-list.component';
 import { DashboardOperarioComponent } from './admin/dashboard-operario/dashboard-operario.component';
+import { DashboardAdminComponent } from './admin/dashboard-admin/dashboard-admin.component';
 import { authGuard, adminGuard } from './services/auth.guard';
 import { loginGuard } from './services/login.guard';
 
@@ -31,8 +32,9 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [adminGuard],
         children: [
-          { path: '', component: DashboardComponent },
+          { path: '', component: DashboardAdminComponent },
           { path: 'dashboard-operario', component: DashboardOperarioComponent },
+          { path: 'dashboard-general', component: DashboardComponent },
           { path: 'usuarios', component: UserListComponent },
           { path: 'contratos', component: ContractListComponent },
           { path: 'servicios', component: ServiceListComponent },

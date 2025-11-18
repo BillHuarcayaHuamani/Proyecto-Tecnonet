@@ -1,5 +1,6 @@
 package com.ProyectoTecnonet.tecnonet.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -49,10 +50,17 @@ public interface FacturaRepository extends JpaRepository<Factura, Integer> {
 
        @Query("SELECT f FROM Factura f " +
                      "JOIN FETCH f.estadoPago ep " +
-                     "JOIN FETCH f.contrato c " + 
-                     "JOIN FETCH c.usuario u " + 
-                     "JOIN FETCH c.plan p " + 
+                     "JOIN FETCH f.contrato c " +
+                     "JOIN FETCH c.usuario u " +
+                     "JOIN FETCH c.plan p " +
                      "JOIN FETCH c.estadoContrato ec " +
                      "WHERE f.idFactura = :idFactura")
        Optional<Factura> findByIdCompleta(@Param("idFactura") Integer idFactura);
+
+       @Query("SELECT SUM(f.montoTotal) FROM Factura f " +
+                     "WHERE f.estadoPago.idEstadoPago = :estadoPagadaId " +
+                     "AND f.fechaPago BETWEEN :fechaInicio AND :fechaFin")
+       BigDecimal sumIngresosDelMes(@Param("estadoPagadaId") Integer estadoPagadaId,
+                     @Param("fechaInicio") LocalDate fechaInicio,
+                     @Param("fechaFin") LocalDate fechaFin);
 }

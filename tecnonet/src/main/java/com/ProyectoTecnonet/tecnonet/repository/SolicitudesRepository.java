@@ -11,9 +11,11 @@ import com.ProyectoTecnonet.tecnonet.model.Solicitudes;
 @Repository
 public interface SolicitudesRepository extends JpaRepository<Solicitudes, Integer> {
 
+    long countByRespuestasSolicitudesIsNull();
+
     @Query("SELECT DISTINCT s FROM Solicitudes s " +
-           "JOIN FETCH s.usuario u " + 
-           "LEFT JOIN FETCH s.respuestasSolicitudes rs " + 
-           "LEFT JOIN FETCH rs.operario op") 
+            "JOIN FETCH s.usuario u " +
+            "LEFT JOIN FETCH s.respuestasSolicitudes rs " +
+            "LEFT JOIN FETCH rs.operario op")
     List<Solicitudes> findAllWithUsuario();
 }

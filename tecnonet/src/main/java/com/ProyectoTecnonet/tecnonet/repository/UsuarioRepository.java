@@ -18,6 +18,10 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     boolean existsByNombreAndApellido(String nombre, String apellido);
 
+    long countByRolNombreRol(String nombreRol);
+
+    List<Usuario> findTop5ByRolNombreRolOrderByFechaRegistroDesc(@Param("nombreRol") String nombreRol);
+
     @Query("SELECT u FROM Usuario u JOIN FETCH u.rol")
     List<Usuario> findAllWithRol();
 

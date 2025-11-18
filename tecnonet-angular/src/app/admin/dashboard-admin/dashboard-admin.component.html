@@ -1,0 +1,133 @@
+<main class="main-content">
+    <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div *ngIf="data && !isLoading">
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Ingresos del Mes</span>
+                    <div class="metric-icon cyan">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                           <line x1="12" y1="1" x2="12" y2="23"></line>
+                           <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                </div>
+                <div class="metric-value">{{ data.ingresosDelMes | currency:'S/ ' }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Total Clientes Activos</span>
+                    <div class="metric-icon pink">
+                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                           <circle cx="9" cy="7" r="4"></circle>
+                           <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                </div>
+            </div>
+                <div class="metric-value">{{ data.totalClientesActivos }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Total Contratos Activos</span>
+                    <div class="metric-icon cyan">
+                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                           <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
+                           <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
+                        </svg>
+                </div>
+            </div>
+                <div class="metric-value">{{ data.totalContratosActivos }}</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title">Solicitudes Pendientes</span>
+                    <div class="metric-icon yellow">
+                        <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
+                           <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                           <path d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="metric-value">{{ data.solicitudesPendientes }}</div>
+            </div>
+
+        </div>
+
+        <div class="dashboard-sections">
+
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                               <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                               <circle cx="8.5" cy="7" r="4"></circle>
+                               <line x1="20" y1="8" x2="20" y2="14"></line>
+                               <line x1="23" y1="11" x2="17" y2="11"></line>
+                            </svg>
+                            Nuevos Clientes Recientes
+                        </div>
+                        <div class="section-subtitle">Últimos 5 clientes registrados</div>
+                    </div>
+                    <button (click)="irAUsuarios()" class="btn-secondary">Ver Todos</button>
+                </div>
+                <div class="orders-list">
+                    <div class="order-item" *ngFor="let cliente of data.nuevosClientes">
+                        <div class="order-info">
+                            <div class="order-id">{{ cliente.nombre }} {{ cliente.apellido }}</div>
+                            <div class="order-company">{{ cliente.email }}</div>
+                        </div>
+                        <div class="order-amount">{{ cliente.fechaRegistro | date:'dd/MM/yyyy' }}</div>
+                        <button class="btn-primary" (click)="irAUsuarios(cliente.idUsuario)">Ver</button>
+                    </div>
+                    <div *ngIf="data.nuevosClientes?.length === 0" class="text-muted text-center py-3">
+                       No hay clientes nuevos recientes.
+                     </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div>
+                        <div class="section-title">
+                            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                               <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443-.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2zm3 6.35c0 .701.478 1.236 1.011 1.492A3.5 3.5 0 0 0 11.5 13v1h-7v-1a3.5 3.5 0 0 0 1.989-3.158C6.978 9.586 7.5 9.052 7.5 8.351z"/>
+                            </svg>
+                            Contratos Pendientes de Activar
+                        </div>
+                        <div class="section-subtitle">Últimos 5 contratos esperando activación</div>
+                    </div>
+                    <button (click)="irAContratos()" class="btn-secondary">Ver Todos</button>
+                </div>
+                <div class="stock-list">
+                    <div class="stock-item" *ngFor="let contrato of data.contratosPendientes">
+                        <div class="stock-info">
+                            <div class="stock-name">{{ contrato.usuario.nombre }} {{ contrato.usuario.apellido }}</div>
+                            <div class="order-company">Plan: {{ contrato.plan.nombrePlan }}</div>
+                        </div>
+                        <div class="stock-quantity">{{ contrato.fechaContratacion | date:'dd/MM/yyyy' }}</div>
+                        <button class="btn-primary" (click)="irAContratos(contrato.idContrato)">Gestionar</button>
+                    </div>
+                     <div *ngIf="data.contratosPendientes?.length === 0" class="text-muted text-center py-3">
+                       No hay contratos pendientes.
+                     </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
