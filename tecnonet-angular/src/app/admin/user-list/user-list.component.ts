@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Usuario } from '../../models/usuario.model';
-import { UsuarioService, RegisterRequest } from '../../services/usuario.service';
+import { UsuarioService } from '../../services/usuario.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -20,17 +20,16 @@ export class UserListComponent implements OnInit {
   esAdmin: boolean = false;
 
   nuevoPersonalForm: FormGroup;
-  dominioSeleccionado: string = '@tecnonet.com';
   mostrarPassword = false;
+
+  rolesCreacion = [
+    { id: 2, nombre: 'Operario' },
+    { id: 1, nombre: 'Administrador' }
+  ];
 
   rolesDisponibles = [
     { id: 1, nombre: 'Administrador' },
     { id: 2, nombre: 'Operario' }
-  ];
-
-  rolesCreacion = [
-    { nombre: 'Operario', dominio: '@tecnonet.com' },
-    { nombre: 'Administrador', dominio: '@adtecnonet.com' }
   ];
 
   constructor(
@@ -43,7 +42,7 @@ export class UserListComponent implements OnInit {
       apellido: ['', Validators.required],
       emailPrefix: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9.]+$')]], 
       password: ['', [Validators.required, Validators.minLength(6)]],
-      rolTipo: ['@tecnonet.com', Validators.required]
+      idRol: [2, Validators.required]
     });
   }
 
@@ -70,14 +69,14 @@ export class UserListComponent implements OnInit {
     const idRol = Number(nuevoRolId);
     if (usuario.rol.idRol === idRol) return;
 
-    if(!confirm(`¿Estás seguro de cambiar el rol de ${usuario.nombre}? El correo cambiará automáticamente.`)) {
+    if(!confirm(`¿Estás seguro de cambiar el rol de ${usuario.nombre}?`)) {
         this.cargarUsuarios();
         return;
     }
 
     this.usuarioService.cambiarRol(usuario.idUsuario, idRol).subscribe({
       next: (usuarioActualizado) => {
-        this.successMessage = `Rol actualizado. Nuevo correo: ${usuarioActualizado.email}`;
+        this.successMessage = `Rol actualizado correctamente para ${usuarioActualizado.email}`;
         this.errorMessage = null;
         
         const index = this.usuarios.findIndex(u => u.idUsuario === usuario.idUsuario);
@@ -85,17 +84,13 @@ export class UserListComponent implements OnInit {
             this.usuarios[index] = usuarioActualizado;
         }
         
-        setTimeout(() => this.successMessage = null, 5000);
+        setTimeout(() => this.successMessage = null, 3000);
       },
       error: (err) => {
         this.errorMessage = err.error?.error || "Error al actualizar.";
         this.cargarUsuarios();
       }
     });
-  }
-
-  onRolChange(): void {
-    this.dominioSeleccionado = this.nuevoPersonalForm.get('rolTipo')?.value;
   }
 
   toggleMostrarPassword(): void {
@@ -106,23 +101,30 @@ export class UserListComponent implements OnInit {
     if (this.nuevoPersonalForm.invalid) return;
 
     const formValue = this.nuevoPersonalForm.value;
-    const emailCompleto = formValue.emailPrefix + formValue.rolTipo;
+    const emailCompleto = `${formValue.emailPrefix}@tecnonet.com`;
+    const idRol = Number(formValue.idRol);
 
-    const request: RegisterRequest = {
+    const request: any = { 
       nombre: formValue.nombre,
       apellido: formValue.apellido,
       email: emailCompleto,
-      password: formValue.password
+      password: formValue.password,
+      idRol: idRol
     };
 
     this.usuarioService.crearPersonal(request).subscribe({
       next: (resp) => {
-        this.successMessage = `Personal creado exitosamente: ${emailCompleto}`;
+        const nombreRol = idRol === 1 ? 'Administrador' : 'Operario';
+        this.successMessage = `Usuario de ${nombreRol} creado exitosamente.`;
+        
         this.errorMessage = null;
-        this.nuevoPersonalForm.reset({ rolTipo: '@tecnonet.com' });
-        this.dominioSeleccionado = '@tecnonet.com';
+        this.nuevoPersonalForm.reset({ idRol: 2 });
         this.mostrarPassword = false;
         this.cargarUsuarios();
+
+        setTimeout(() => {
+            this.successMessage = null;
+        }, 3000);
       },
       error: (err) => {
         this.errorMessage = err.error?.error || "Error al crear el usuario.";

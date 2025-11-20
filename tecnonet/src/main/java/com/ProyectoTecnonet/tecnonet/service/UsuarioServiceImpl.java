@@ -33,24 +33,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public Usuario registrarNuevoUsuario(RegisterRequest registerRequest) throws Exception {
         String emailLower = registerRequest.getEmail().toLowerCase();
-        boolean esCorreoCorporativo = emailLower.endsWith("@tecnonet.com") || emailLower.endsWith("@adtecnonet.com");
         
-        if (esCorreoCorporativo) {
+        if (emailLower.endsWith("@tecnonet.com")) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             boolean esAdmin = auth != null && auth.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ROLE_ADMINISTRADOR"));
 
             if (!esAdmin) {
-                throw new Exception("Acceso denegado: Solo los Administradores pueden crear cuentas con dominios corporativos (@tecnonet o @adtecnonet).");
+                throw new Exception("Acceso denegado: Solo los Administradores pueden crear cuentas corporativas.");
             }
         }
 
         if (usuarioRepository.existsByEmail(registerRequest.getEmail())) {
             throw new Exception("El correo electrónico '" + registerRequest.getEmail() + "' ya está registrado.");
-        }
-
-        if (usuarioRepository.existsByNombreAndApellido(registerRequest.getNombre(), registerRequest.getApellido())) {
-            throw new Exception("Ya existe un usuario registrado con el nombre: " + registerRequest.getNombre() + " " + registerRequest.getApellido());
         }
 
         Usuario nuevoUsuario = new Usuario();
@@ -60,16 +55,19 @@ public class UsuarioServiceImpl implements UsuarioService {
         nuevoUsuario.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
         int rolId;
-        if (emailLower.endsWith("@adtecnonet.com")) {
-            rolId = 1;
-        } else if (emailLower.endsWith("@tecnonet.com")) {
-            rolId = 2;
+        
+        if (registerRequest.getIdRol() != null && emailLower.endsWith("@tecnonet.com")) {
+            if (registerRequest.getIdRol() != 1 && registerRequest.getIdRol() != 2) {
+                 throw new Exception("Rol inválido para cuenta corporativa.");
+            }
+            rolId = registerRequest.getIdRol();
         } else {
-            rolId = 3;
+            rolId = 3; 
         }
 
         Rol rolAsignado = rolRepository.findById(rolId)
                 .orElseThrow(() -> new Exception("Rol no encontrado ID: " + rolId));
+        
         nuevoUsuario.setRol(rolAsignado);
         nuevoUsuario.setActivo(true);
         nuevoUsuario.setFechaRegistro(LocalDateTime.now());
@@ -86,22 +84,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         Rol nuevoRol = rolRepository.findById(idNuevoRol)
                 .orElseThrow(() -> new EntityNotFoundException("Rol no encontrado"));
 
-        String[] partesEmail = usuario.getEmail().split("@");
-        String prefijoEmail = partesEmail[0];
-        String nuevoEmail = usuario.getEmail();
-
-        if (idNuevoRol == 1) {
-            nuevoEmail = prefijoEmail + "@adtecnonet.com";
-        } else if (idNuevoRol == 2) {
-            nuevoEmail = prefijoEmail + "@tecnonet.com";
-        } 
-        
-        if (!nuevoEmail.equalsIgnoreCase(usuario.getEmail()) && usuarioRepository.existsByEmail(nuevoEmail)) {
-            throw new Exception("No se puede cambiar el rol: El correo generado '" + nuevoEmail + "' ya está en uso por otro usuario.");
-        }
-
         usuario.setRol(nuevoRol);
-        usuario.setEmail(nuevoEmail);
         
         return usuarioRepository.save(usuario);
     }
