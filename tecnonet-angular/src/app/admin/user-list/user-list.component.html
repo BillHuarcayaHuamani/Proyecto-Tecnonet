@@ -81,10 +81,10 @@
                 <form [formGroup]="nuevoPersonalForm" (ngSubmit)="crearPersonal()">
                     
                     <div class="mb-3">
-                        <label class="form-label">Tipo de Personal</label>
-                        <select class="form-select" formControlName="rolTipo" (change)="onRolChange()">
-                            <option *ngFor="let rol of rolesCreacion" [value]="rol.dominio">
-                                {{ rol.nombre }} ({{ rol.dominio }})
+                        <label class="form-label">Rol a Asignar</label>
+                        <select class="form-select" formControlName="idRol">
+                            <option *ngFor="let rol of rolesCreacion" [value]="rol.id">
+                                {{ rol.nombre }}
                             </option>
                         </select>
                     </div>
@@ -104,10 +104,10 @@
                         <label class="form-label">Correo Institucional</label>
                         <div class="input-group">
                             <input type="text" class="form-control text-end" formControlName="emailPrefix" placeholder="usuario">
-                            <span class="input-group-text fw-bold">{{ dominioSeleccionado }}</span>
+                            <span class="input-group-text fw-bold">&#64;tecnonet.com</span>
                         </div>
                         <div *ngIf="nuevoPersonalForm.get('emailPrefix')?.invalid && nuevoPersonalForm.get('emailPrefix')?.touched" class="text-danger small mt-1">
-                            Solo se permiten letras y números.
+                            Solo se permiten letras y números (sin espacios).
                         </div>
                     </div>
 
