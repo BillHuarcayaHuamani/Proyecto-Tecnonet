@@ -2,40 +2,34 @@
   <div class="container">
     <div class="text-center mb-5">
       <h2 class="fw-bold">Nuestros Planes Hogar de Internet</h2>
-      <p class="lead text-muted">Descubre nuestras opciones de internet rápido y confiable, diseñadas para ajustarse a
-        tus necesidades y presupuesto.</p>
+      <p class="lead text-muted">Descubre nuestras opciones de internet rápido y confiable.</p>
     </div>
 
     <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
     <div class="row g-4 justify-content-center">
-
       <div class="col-lg-4 col-md-6" *ngFor="let plan of planes">
         <div class="card h-100 shadow-sm border-light text-center plan-card">
           <div class="card-body p-4 d-flex flex-column">
             <h5 class="fw-bold text-primary">{{ plan.velocidadDescargaMbps }} Mbps</h5>
             <h3 class="card-title h4 fw-bold mb-3">{{ plan.nombrePlan }}</h3>
             <p class="text-muted flex-grow-1">{{ plan.descripcion }}</p>
-
+            
             <ul class="list-unstyled text-start my-4">
-              <li><i class="bi bi-arrow-down-circle text-primary me-2"></i> Descarga: {{ plan.velocidadDescargaMbps }}
-                Mbps</li>
-              <li><i class="bi bi-arrow-up-circle text-info me-2"></i> Carga: {{ plan.velocidadCargaMbps }} Mbps</li>
-              <li><i class="bi bi-wifi text-success me-2"></i> Wifi: {{ plan.wifiIncluido ? 'Sí' : 'No' }}</li>
-              <li><i class="bi bi-gift text-warning me-2"></i> Mes gratis: {{ plan.mesGratisPromocion > 0 ? 'Sí' : 'No'
-                }}</li>
-              <li><i class="bi bi-ethernet text-secondary me-2"></i> Puertos: {{ plan.puertosEthernet }}</li>
+               <li><i class="bi bi-arrow-down-circle text-primary me-2"></i> Descarga: {{ plan.velocidadDescargaMbps }} Mbps</li>
+               <li><i class="bi bi-arrow-up-circle text-info me-2"></i> Carga: {{ plan.velocidadCargaMbps }} Mbps</li>
+               <li><i class="bi bi-wifi text-success me-2"></i> Wifi: {{ plan.wifiIncluido ? 'Sí' : 'No' }}</li>
             </ul>
-
+            
             <p class="fs-4 fw-bold text-dark my-3">S/ {{ plan.precioMensual.toFixed(2) }} x mes</p>
-            <button class="btn btn-primary btn-lg mt-auto" data-bs-toggle="modal" data-bs-target="#contratarModal"
-              (click)="seleccionarPlan(plan)">
-              Contratar Plan
+            <button class="btn btn-primary btn-lg mt-auto" 
+                    (click)="seleccionarPlan(plan)">
+              {{ contratoExistente && contratoExistente.plan.idPlan === plan.idPlan ? 'Tu Plan Actual' : 
+                 (contratoExistente ? 'Cambiar a este Plan' : 'Contratar Plan') }}
             </button>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </section>
@@ -109,87 +103,127 @@
   </div>
 </section>
 
-<div class="modal fade" id="contratarModal" tabindex="-1">
+<div class="modal fade" id="contratarModal" tabindex="-1" 
+     [class.show]="showContratoModal" 
+     [style.display]="showContratoModal ? 'block' : 'none'"
+     aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content" *ngIf="planSeleccionado">
       <div class="modal-header">
-        <h5 class="modal-title">Contratar: {{ planSeleccionado.nombrePlan }}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title">
+            {{ modoEdicion ? 'Actualizar Solicitud a: ' : 'Contratar: ' }} {{ planSeleccionado.nombrePlan }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeContratoModal()"></button>
       </div>
       <div class="modal-body">
         <form [formGroup]="contratoForm">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Nombre del Cliente</label>
-              <input type="text" class="form-control" formControlName="nombreCliente" readonly>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" formControlName="nombreCliente" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Apellido</label>
+                <input type="text" class="form-control" formControlName="apellidoCliente" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Correo</label>
+                <input type="email" class="form-control" formControlName="emailCliente" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Costo de Instalación (S/)</label>
+                <input type="number" class="form-control" formControlName="costoInstalacion">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Distrito</label>
+                <select class="form-select" formControlName="distrito">
+                  <option value="">Seleccione...</option>
+                  <option value="Villa El Salvador">Villa El Salvador</option>
+                  <option value="Villa María del Triunfo">Villa María del Triunfo</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Dirección Exacta</label>
+                <input type="text" class="form-control" formControlName="direccionExacta">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="text" class="form-control" formControlName="numeroTelefonoContacto">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Método de Pago</label>
+                <select class="form-select" formControlName="metodoPago">
+                  <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                  <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                  <option value="Yape/Plin">Yape/Plin</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Fecha Inicio (Opcional)</label>
+                <input type="date" class="form-control" formControlName="fechaInicioServicio">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Observaciones</label>
+                <textarea class="form-control" rows="3" formControlName="observaciones"></textarea>
+              </div>
             </div>
-            <div class="col-md-6">
-              <label class="form-label">Apellido del Cliente</label>
-              <input type="text" class="form-control" formControlName="apellidoCliente" readonly>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Correo Electrónico</label>
-              <input type="email" class="form-control" formControlName="emailCliente" readonly>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Costo de Instalación (S/)</label>
-              <input type="number" class="form-control" formControlName="costoInstalacion">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Dirección de Instalación</label>
-              <input type="text" class="form-control" formControlName="direccionInstalacion">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Número de Teléfono de Contacto</label>
-              <input type="text" class="form-control" formControlName="numeroTelefonoContacto">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Método de Pago</label>
-              <select class="form-select" formControlName="metodoPago">
-                <option value="">Seleccione...</option>
-                <option value="Transferencia Bancaria">Transferencia Bancaria</option>
-                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
-                <option value="Yape/Plin">Yape/Plin</option>
-              </select>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Fecha de Inicio de Servicio (Opcional)</label>
-              <input type="date" class="form-control" formControlName="fechaInicioServicio">
-            </div>
-            <div class="col-12">
-              <label class="form-label">Observaciones</label>
-              <textarea class="form-control" rows="3" formControlName="observaciones"></textarea>
-            </div>
-          </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="confirmarContratacion()"
-          data-bs-dismiss="modal">Confirmar Contratación</button>
+        <button type="button" class="btn btn-secondary" (click)="closeContratoModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click)="confirmarContratacion()">
+            {{ modoEdicion ? 'Actualizar Solicitud' : 'Confirmar Contratación' }}
+        </button>
       </div>
     </div>
   </div>
 </div>
+<div class="modal-backdrop fade show" *ngIf="showContratoModal"></div>
 
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true"
-  [class.show]="showSuccessModal" [style.display]="showSuccessModal ? 'block' : 'none'">
+<div class="modal fade" [class.show]="showWarningModal" [style.display]="showWarningModal ? 'block' : 'none'" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="successModalLabel">¡Contratación Exitosa!</h5>
-        <button type="button" class="btn-close btn-close-white" (click)="closeSuccessModal()"
-          aria-label="Close"></button>
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title"><i class="bi bi-clock-history"></i> Solicitud Pendiente</h5>
+        <button type="button" class="btn-close" (click)="closeWarningModal()"></button>
       </div>
       <div class="modal-body">
-        <p>Tu solicitud de contrato ha sido registrada correctamente. 👍</p>
-        <p>El estado inicial es "Pendiente de Activación". Nuestro equipo se pondrá en contacto contigo pronto.</p>
+        <div *ngIf="isSamePlanPending">
+            <p>Ya tienes una solicitud pendiente para el plan <strong>{{ planSeleccionado?.nombrePlan }}</strong>.</p>
+            <p>Por favor, espera a que nuestro equipo apruebe tu solicitud y coordine la instalación.</p>
+        </div>
+
+        <div *ngIf="!isSamePlanPending">
+            <p>Ya tienes una solicitud pendiente para el plan <strong>{{ contratoExistente?.plan?.nombrePlan }}</strong>.</p>
+            <p>¿Deseas cancelar esa solicitud y pedir el plan <strong>{{ planSeleccionado?.nombrePlan }}</strong> en su lugar?</p>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success" (click)="closeSuccessModal()">Entendido</button>
+        <button *ngIf="isSamePlanPending" type="button" class="btn btn-secondary" (click)="closeWarningModal()">Entendido</button>
+        <ng-container *ngIf="!isSamePlanPending">
+            <button type="button" class="btn btn-secondary" (click)="closeWarningModal()">No, mantener anterior</button>
+            <button type="button" class="btn btn-primary" (click)="iniciarEdicion()">Sí, actualizar solicitud</button>
+        </ng-container>
       </div>
     </div>
   </div>
 </div>
+<div class="modal-backdrop fade show" *ngIf="showWarningModal"></div>
 
-<div class="modal-backdrop fade" [class.show]="showSuccessModal" *ngIf="showSuccessModal"></div>
+<div class="modal fade" [class.show]="showSuccessModal" [style.display]="showSuccessModal ? 'block' : 'none'" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">¡Operación Exitosa!</h5>
+            <button type="button" class="btn-close btn-close-white" (click)="closeSuccessModal()"></button>
+          </div>
+          <div class="modal-body">
+            <p>Tu solicitud ha sido {{ modoEdicion ? 'actualizada' : 'registrada' }} correctamente.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" (click)="closeSuccessModal()">Entendido</button>
+          </div>
+        </div>
+      </div>
+</div>
+<div class="modal-backdrop fade show" *ngIf="showSuccessModal"></div>

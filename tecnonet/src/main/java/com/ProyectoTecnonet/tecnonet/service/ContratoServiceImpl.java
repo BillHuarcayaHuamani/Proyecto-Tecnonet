@@ -39,36 +39,29 @@ public class ContratoServiceImpl implements ContratoService {
     @Override
     @Transactional
     public Contrato actualizarEstadoContrato(Integer idContrato, Integer nuevoEstadoId) {
-
+        
         Contrato contrato = contratoRepository.findByIdWithDetails(idContrato)
-                .orElseThrow(() -> new EntityNotFoundException("Contrato no encontrado: " + idContrato));
-
+            .orElseThrow(() -> new EntityNotFoundException("Contrato no encontrado: " + idContrato));
+        
         EstadoContrato nuevoEstado = estadoContratoRepository.findById(nuevoEstadoId)
-                .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado: " + nuevoEstadoId));
+            .orElseThrow(() -> new EntityNotFoundException("Estado no encontrado: " + nuevoEstadoId));
 
         Integer estadoOriginalId = contrato.getEstadoContrato().getIdEstadoContrato();
 
-        if (estadoOriginalId.equals(nuevoEstadoId)) {
-            return contrato;
-        }
+        if (estadoOriginalId.equals(nuevoEstadoId)) return contrato;
 
         contrato.setEstadoContrato(nuevoEstado);
-
+        
         if (estadoOriginalId == 2 && nuevoEstadoId == 1) { 
-            System.out.println(">>> ContratoService: Transición de Pendiente a Activo. Estableciendo fecha de activación y generando facturas 'catch-up'...");
-            
-            contrato.setFechaActivacion(LocalDate.now()); 
-            
-            facturacionService.generarFacturasPendientesAlActivar(contrato);
-
-        } else if (estadoOriginalId == 1 && (nuevoEstadoId == 3 || nuevoEstadoId == 4)) { 
-            System.out.println(">>> ContratoService: Transición de Activo a Finalizado/Cancelado. Prorrateando mes actual y anulando futuras...");
+            System.out.println(">>> ContratoService: Activando contrato...");
+            contrato.setFechaActivacion(LocalDate.now());
+            facturacionService.generarFacturasPendientesAlActivar(contrato); 
+        } 
+        else if (estadoOriginalId == 1 && (nuevoEstadoId == 3 || nuevoEstadoId == 4)) { 
+            System.out.println(">>> ContratoService: Terminando contrato...");
             LocalDate fechaTerminacion = LocalDate.now();
             facturacionService.prorratearFacturaMesActual(contrato, fechaTerminacion);
             facturacionService.anularFacturasFuturas(contrato);
-
-        } else {
-            System.out.println(">>> ContratoService: Transición no requiere acción especial. Estado original: " + estadoOriginalId + ", Nuevo estado: " + nuevoEstadoId);
         }
 
         return contratoRepository.save(contrato);
@@ -78,16 +71,17 @@ public class ContratoServiceImpl implements ContratoService {
     @Transactional
     public Contrato crearContrato(ContratoRequest request) {
         Usuario usuario = usuarioRepository.findById(request.getIdUsuario())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado: " + request.getIdUsuario()));
+            .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
         Plan plan = planRepository.findById(request.getIdPlan())
-                .orElseThrow(() -> new EntityNotFoundException("Plan no encontrado: " + request.getIdPlan()));
+            .orElseThrow(() -> new EntityNotFoundException("Plan no encontrado"));
         EstadoContrato estadoPendiente = estadoContratoRepository.findById(2)
-                .orElseThrow(() -> new EntityNotFoundException("Estado 'Pendiente de Activación' (ID=2) no encontrado"));
+            .orElseThrow(() -> new EntityNotFoundException("Estado 'Pendiente' no encontrado"));
 
         Contrato nuevoContrato = new Contrato();
         nuevoContrato.setUsuario(usuario);
         nuevoContrato.setPlan(plan);
         nuevoContrato.setEstadoContrato(estadoPendiente);
+        
         nuevoContrato.setFechaContratacion(LocalDate.parse(request.getFechaContratacion()));
         nuevoContrato.setFechaInicioServicio(LocalDate.parse(request.getFechaInicioServicio()));
         nuevoContrato.setFechaFinContrato(LocalDate.parse(request.getFechaFinContrato()));
@@ -98,5 +92,29 @@ public class ContratoServiceImpl implements ContratoService {
         nuevoContrato.setObservaciones(request.getObservaciones());
 
         return contratoRepository.save(nuevoContrato);
+    }
+
+    @Override
+    @Transactional
+    public Contrato actualizarDatosContrato(Integer idContrato, ContratoRequest request) {
+        Contrato contrato = contratoRepository.findByIdWithDetails(idContrato)
+            .orElseThrow(() -> new EntityNotFoundException("Contrato no encontrado"));
+            
+        Plan nuevoPlan = planRepository.findById(request.getIdPlan())
+             .orElseThrow(() -> new EntityNotFoundException("Plan no encontrado"));
+        
+        contrato.setPlan(nuevoPlan);
+        
+        contrato.setDireccionInstalacion(request.getDireccionInstalacion());
+        contrato.setNumeroTelefonoContacto(request.getNumeroTelefonoContacto());
+        contrato.setMetodoPago(request.getMetodoPago());
+        contrato.setObservaciones(request.getObservaciones());
+        
+        if(request.getFechaInicioServicio() != null) {
+             contrato.setFechaInicioServicio(LocalDate.parse(request.getFechaInicioServicio()));
+             contrato.setFechaFinContrato(LocalDate.parse(request.getFechaFinContrato()));
+        }
+
+        return contratoRepository.save(contrato);
     }
 }

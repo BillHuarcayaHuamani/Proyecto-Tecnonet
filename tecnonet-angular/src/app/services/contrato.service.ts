@@ -31,4 +31,12 @@ export class ContratoService {
   crearContrato(contratoData: any): Observable<Contrato> {
     return this.http.post<Contrato>(this.apiUrl, contratoData);
   }
+
+  getMiUltimoContrato(): Observable<Contrato> {
+    return this.http.get<Contrato>(`${this.apiUrl}/mi-ultimo`);
+  }
+
+  actualizarDatosContrato(id: number, contratoData: any): Observable<Contrato> {
+    return this.http.put<Contrato>(`${this.apiUrl}/${id}`, contratoData);
+  }
 }

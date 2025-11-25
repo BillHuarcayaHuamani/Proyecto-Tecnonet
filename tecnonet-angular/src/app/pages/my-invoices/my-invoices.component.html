@@ -21,7 +21,7 @@
                     <tbody>
                         <tr *ngFor="let factura of facturas; let i = index">
                             <th>{{ i + 1 }}</th>
-                            <td>Contrato #{{ factura.idContrato }}</td>
+                            <td>{{ factura.nombrePlan }}</td>
                             <td>{{ factura.fechaEmision | date:'dd/MM/yyyy' }}</td>
                             <td>{{ factura.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
                             <td>{{ factura.montoTotal | currency:'S/ ' }}</td>
