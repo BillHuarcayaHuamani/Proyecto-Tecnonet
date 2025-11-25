@@ -3,14 +3,17 @@ package com.ProyectoTecnonet.tecnonet.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.ProyectoTecnonet.tecnonet.model.Factura;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor 
+@NoArgsConstructor
 public class FacturaDTO {
     private Integer idFactura;
-    private Integer idContrato; 
+    private Integer idContrato;
+    private String nombrePlan;
     private String nombreEstadoPago;
     private BigDecimal montoTotal;
     private LocalDate fechaEmision;
@@ -19,11 +22,15 @@ public class FacturaDTO {
     private LocalDate fechaPago;
     private String descripcion;
 
-    public FacturaDTO(com.ProyectoTecnonet.tecnonet.model.Factura factura) {
+    public FacturaDTO(Factura factura) {
         this.idFactura = factura.getIdFactura();
-        if (factura.getContrato() != null) { 
+        if (factura.getContrato() != null) {
             this.idContrato = factura.getContrato().getIdContrato();
+            if (factura.getContrato().getPlan() != null) {
+                this.nombrePlan = factura.getContrato().getPlan().getNombrePlan();
+            }
         }
+        
         if (factura.getEstadoPago() != null) {
             this.nombreEstadoPago = factura.getEstadoPago().getNombreEstado();
         }

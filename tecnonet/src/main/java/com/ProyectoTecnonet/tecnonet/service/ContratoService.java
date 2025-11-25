@@ -7,4 +7,6 @@ public interface ContratoService {
     Contrato actualizarEstadoContrato(Integer idContrato, Integer nuevoEstadoId);
     
     Contrato crearContrato(ContratoRequest contratoRequest);
+
+    Contrato actualizarDatosContrato(Integer idContrato, ContratoRequest contratoRequest);
 }

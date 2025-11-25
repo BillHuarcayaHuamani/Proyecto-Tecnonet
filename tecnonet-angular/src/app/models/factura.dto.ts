@@ -1,11 +1,12 @@
 export interface FacturaDTO {
   idFactura: number;
-  idContrato: number; 
-  nombreEstadoPago: string; 
+  idContrato: number;
+  nombrePlan: string;
+  nombreEstadoPago: string;
   montoTotal: number;
-  fechaEmision: string; 
-  fechaVencimiento: string; 
+  fechaEmision: string;
+  fechaVencimiento: string;
   metodoPago: string | null;
-  fechaPago: string | null; 
+  fechaPago: string | null;
   descripcion: string;
 }
